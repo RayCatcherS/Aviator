@@ -9,6 +9,7 @@ import (
 	"io/fs"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 )
@@ -32,7 +33,7 @@ func NewServer(cm *config.ConfigManager, webFS fs.FS) *Server {
 func (s *Server) Start(port int) error {
 	addr := fmt.Sprintf("0.0.0.0:%d", port)
 	log.Printf("Starting server on %s", addr)
-	
+
 	s.httpServer = &http.Server{
 		Addr:    addr,
 		Handler: s,
@@ -84,12 +85,22 @@ func (s *Server) handleAPI(w http.ResponseWriter, r *http.Request) {
 	case strings.HasPrefix(r.URL.Path, "/api/launch/") && r.Method == "POST":
 		appID := strings.TrimPrefix(r.URL.Path, "/api/launch/")
 		s.handleLaunch(w, appID)
-		
+
 	case r.URL.Path == "/api/info" && r.Method == "GET":
-		// Simple info
+		// Get hostname and username
+		hostname, _ := os.Hostname()
+		username := os.Getenv("USERNAME") // Windows username
+
+		// Create a friendly display name
+		displayName := hostname
+		if username != "" {
+			displayName = fmt.Sprintf("%s@%s", username, hostname)
+		}
+
 		json.NewEncoder(w).Encode(map[string]string{
-			"status": "running",
-			"backend": "go",
+			"status":   "running",
+			"backend":  "go",
+			"hostname": displayName,
 		})
 
 	default:
@@ -112,7 +123,7 @@ func (s *Server) handleLaunch(w http.ResponseWriter, appID string) {
 	}
 
 	json.NewEncoder(w).Encode(map[string]string{
-		"status": "success",
+		"status":  "success",
 		"message": "Launched " + app.Name,
 	})
 }
