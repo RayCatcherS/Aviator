@@ -46,9 +46,12 @@ func main() {
 
 	// 6. Run Wails Application
 	err = wails.Run(&options.App{
-		Title:  "Aviator",
-		Width:  900,
-		Height: 700,
+		Title:     "Aviator",
+		Width:     900,
+		Height:    700,
+		MinWidth:  750,
+		MinHeight: 550,
+		Frameless: true,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},

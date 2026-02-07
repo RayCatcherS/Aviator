@@ -1,63 +1,86 @@
 <template>
   <div id="app">
-    <!-- Status Header Panel -->
-    <div class="glass-panel fade-in" style="flex-shrink: 0;">
-      <div class="flex justify-between items-center">
-        <div class="flex flex-col gap-sm">
-          <h1 style="font-size: 28px; font-weight: 700; margin: 0;">Aviator</h1>
-          <div class="status-badge" :class="serverInfo.status">
-            {{ serverInfo.status.toUpperCase() }}
-          </div>
-          
-          <!-- Server Control Buttons -->
-          <div class="flex gap-sm" style="margin-top: 12px;">
-            <button 
-              @click="startServer" 
-              :disabled="serverInfo.running"
-              class="glass-button success"
-              :class="{ 'opacity-50 cursor-not-allowed': serverInfo.running }"
-            >
-              ▶️ Start Server
-            </button>
-            <button 
-              @click="stopServer"
-              :disabled="!serverInfo.running"
-              class="glass-button"
-              :class="{ 'opacity-50 cursor-not-allowed': !serverInfo.running }"
-             style="background: rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.3);"
-            >
-              ⏹️ Stop Server
-            </button>
-          </div>
-          
-          <div v-if="serverInfo.running" class="flex flex-col gap-sm" style="margin-top: 12px;">
-            <div style="font-size: 13px; opacity: 0.9;">
-              <strong>Local:</strong> <a :href="serverInfo.localURL" @click.prevent="openURL(serverInfo.localURL)">{{ serverInfo.localURL }}</a>
-            </div>
-            <div style="font-size: 13px; opacity: 0.9;">
-              <strong>Network:</strong> <a :href="serverInfo.networkURL" @click.prevent="openURL(serverInfo.networkURL)">{{ serverInfo.networkURL }}</a>
-            </div>
-          </div>
-          <div v-else style="margin-top: 12px; font-size: 13px; opacity: 0.7;">
-            Server stopped. Click "Start Server" to enable web access.
-          </div>
-        </div>
-        
-        <!-- QR Code -->
-        <div v-if="serverInfo.running" class="qr-container glass-card" style="padding: 16px; cursor: default;">
-          <canvas ref="qrCanvas" width="140" height="140"></canvas>
-        </div>
-        <div v-else class="qr-container glass-card" style="padding: 16px; width: 172px; height: 172px; display: flex; align-items: center; justify-content: center; opacity: 0.3;">
-          <div style="text-align: center;">
-            <div style="font-size: 48px;">🔒</div>
-            <div style="font-size: 11px; margin-top: 8px;">Server Offline</div>
-          </div>
-        </div>
+    <!-- Custom Title Bar (Frameless) -->
+    <div class="title-bar">
+      <div class="title-bar-left">
+        <span class="title-text">Aviator</span>
+      </div>
+      <div class="title-bar-controls">
+        <button class="title-btn" @click="minimizeWindow" title="Minimize">
+          <svg width="12" height="12" viewBox="0 0 12 12"><line x1="0" y1="6" x2="12" y2="6" stroke="currentColor" stroke-width="1"/></svg>
+        </button>
+        <button class="title-btn" @click="toggleMaximize" title="Maximize">
+          <svg width="12" height="12" viewBox="0 0 12 12"><rect x="1" y="1" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+        </button>
+        <button class="title-btn close-btn" @click="closeWindow" title="Close">
+          <svg width="12" height="12" viewBox="0 0 12 12">
+            <line x1="1" y1="1" x2="11" y2="11" stroke="currentColor" stroke-width="1"/>
+            <line x1="11" y1="1" x2="1" y2="11" stroke="currentColor" stroke-width="1"/>
+          </svg>
+        </button>
       </div>
     </div>
 
-    <!-- Applications Section -->
-    <div class="glass-panel" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+    <!-- Content Area with Padding -->
+    <div style="flex: 1; display: flex; flex-direction: column; gap: var(--spacing-md); padding: var(--spacing-md) var(--spacing-lg) var(--spacing-lg) var(--spacing-lg); overflow: hidden;">
+      <!-- Status Header Panel -->
+      <div class="glass-panel fade-in" style="flex-shrink: 0;">
+        <div class="flex justify-between items-center">
+          <div class="flex flex-col gap-sm">
+            <h1 style="font-size: 28px; font-weight: 700; margin: 0;">Aviator</h1>
+            <div class="status-badge" :class="serverInfo.status">
+              {{ serverInfo.status.toUpperCase() }}
+            </div>
+            
+            <!-- Server Control Buttons -->
+            <div class="flex gap-sm" style="margin-top: 12px;">
+              <button 
+                @click="startServer" 
+                :disabled="serverInfo.running"
+                class="glass-button success"
+                :class="{ 'opacity-50 cursor-not-allowed': serverInfo.running }"
+              >
+                ▶️ Start Server
+              </button>
+              <button 
+                @click="stopServer"
+                :disabled="!serverInfo.running"
+                class="glass-button"
+                :class="{ 'opacity-50 cursor-not-allowed': !serverInfo.running }"
+               style="background: rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.3);"
+              >
+                ⏹️ Stop Server
+              </button>
+            </div>
+            
+            <div v-if="serverInfo.running" class="flex flex-col gap-sm" style="margin-top: 12px;">
+              <div style="font-size: 13px; opacity: 0.9;">
+                <strong>Local:</strong> <a :href="serverInfo.localURL" @click.prevent="openURL(serverInfo.localURL)">{{ serverInfo.localURL }}</a>
+              </div>
+              <div style="font-size: 13px; opacity: 0.9;">
+                <strong>Network:</strong> <a :href="serverInfo.networkURL" @click.prevent="openURL(serverInfo.networkURL)">{{ serverInfo.networkURL }}</a>
+              </div>
+            </div>
+            <div v-else style="margin-top: 12px; font-size: 13px; opacity: 0.7;">
+              Server stopped. Click "Start Server" to enable web access.
+            </div>
+          </div>
+          
+          <!-- QR Code -->
+          <div v-if="serverInfo.running" class="qr-container glass-card" style="padding: 16px; cursor: default;">
+            <canvas ref="qrCanvas" width="140" height="140"></canvas>
+          </div>
+          <div v-else class="qr-container glass-card" style="padding: 16px; width: 172px; height: 172px; display: flex; align-items: center; justify-content: center; opacity: 0.3;">
+            <div style="text-align: center;">
+              <div style="font-size: 48px;">🔒</div>
+              <div style="font-size: 11px; margin-top: 8px;">Server Offline</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Applications Section -->
+      <div class="glass-panel" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
       <div class="flex justify-between items-center" style="margin-bottom: 16px;">
         <h2 style="font-size: 20px; font-weight: 600; margin: 0;">Applications</h2>
         <button @click="openAddDialog" class="glass-button primary">
@@ -91,6 +114,8 @@
         </div>
       </div>
     </div>
+    </div>
+    <!-- End Content Area -->
 
     <!-- Add/Edit Dialog -->
     <div v-if="showDialog" class="dialog-overlay" @click.self="closeDialog">
@@ -127,8 +152,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { GetApps, AddApp, UpdateApp, RemoveApp, GetServerInfo, SelectFile, StartServer, StopServer } from '../wailsjs/go/main/App';
-import { BrowserOpenURL } from '../wailsjs/runtime/runtime';
-import { EventsOn } from '../wailsjs/runtime/runtime';
+import { BrowserOpenURL, EventsOn, WindowMinimise, WindowToggleMaximise, Quit } from '../wailsjs/runtime/runtime';
 import QRCode from 'qrcode';
 
 const apps = ref([]);
@@ -286,9 +310,85 @@ async function selectFile() {
 function openURL(url) {
   BrowserOpenURL(url);
 }
+
+// Window controls
+function minimizeWindow() {
+  WindowMinimise();
+}
+
+function toggleMaximize() {
+  WindowToggleMaximise();
+}
+
+function closeWindow() {
+  Quit();
+}
 </script>
 
 <style scoped>
+/* Custom Title Bar */
+.title-bar {
+  --wails-draggable: drag;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 32px;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0 12px;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.title-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.title-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 0.5px;
+}
+
+.title-bar-controls {
+  --wails-draggable: no-drag;
+  display: flex;
+  gap: 1px;
+}
+
+.title-btn {
+  width: 46px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  outline: none;
+}
+
+.title-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.title-btn.close-btn:hover {
+  background: #e81123;
+  color: white;
+}
+
+.title-btn svg {
+  width: 12px;
+  height: 12px;
+}
+
 .qr-container canvas {
   display: block;
 }
