@@ -3,6 +3,7 @@ package server
 import (
 	"aviator-wails/internal/config"
 	"aviator-wails/internal/launcher"
+	"aviator-wails/internal/processmon"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -11,22 +12,31 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"sync"
 	"time"
 )
 
 type Server struct {
-	Config     *config.ConfigManager
-	FileServer http.Handler
-	httpServer *http.Server
+	Config         *config.ConfigManager
+	ProcessMonitor *processmon.ProcessMonitor
+	FileServer     http.Handler
+	httpServer     *http.Server
+
+	// Cache for process statuses
+	statusCache      map[string]bool
+	statusCacheTime  time.Time
+	statusCacheMutex sync.RWMutex
 }
 
-func NewServer(cm *config.ConfigManager, webFS fs.FS) *Server {
+func NewServer(cm *config.ConfigManager, webFS fs.FS, pm *processmon.ProcessMonitor) *Server {
 	// Create file server for static files
 	fsHandler := http.FileServer(http.FS(webFS))
 
 	return &Server{
-		Config:     cm,
-		FileServer: fsHandler,
+		Config:         cm,
+		ProcessMonitor: pm,
+		FileServer:     fsHandler,
+		statusCache:    make(map[string]bool),
 	}
 }
 
@@ -103,6 +113,30 @@ func (s *Server) handleAPI(w http.ResponseWriter, r *http.Request) {
 			"hostname": displayName,
 		})
 
+	case r.URL.Path == "/api/process-statuses" && r.Method == "GET":
+		// Return cached statuses if less than 1 second old
+		s.statusCacheMutex.RLock()
+		cacheAge := time.Since(s.statusCacheTime)
+		if cacheAge < time.Second && len(s.statusCache) > 0 {
+			cached := make(map[string]bool)
+			for k, v := range s.statusCache {
+				cached[k] = v
+			}
+			s.statusCacheMutex.RUnlock()
+			json.NewEncoder(w).Encode(cached)
+			return
+		}
+		s.statusCacheMutex.RUnlock()
+
+		// Update cache
+		statuses := s.ProcessMonitor.GetAllStatuses()
+		s.statusCacheMutex.Lock()
+		s.statusCache = statuses
+		s.statusCacheTime = time.Now()
+		s.statusCacheMutex.Unlock()
+
+		json.NewEncoder(w).Encode(statuses)
+
 	default:
 		http.Error(w, "Not Found", http.StatusNotFound)
 	}
@@ -115,15 +149,17 @@ func (s *Server) handleLaunch(w http.ResponseWriter, appID string) {
 		return
 	}
 
-	if err := launcher.RunExecutable(app.Path, app.Args); err != nil {
+	pid, err := launcher.RunExecutableWithTracking(app.ID, app.Name, app.Path, app.Args)
+	if err != nil {
 		log.Printf("Error launching %s: %v", app.Name, err)
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
 		return
 	}
 
-	json.NewEncoder(w).Encode(map[string]string{
+	json.NewEncoder(w).Encode(map[string]interface{}{
 		"status":  "success",
 		"message": "Launched " + app.Name,
+		"pid":     pid,
 	})
 }

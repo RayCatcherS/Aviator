@@ -10,6 +10,10 @@ export function GetApps() {
   return window['go']['main']['App']['GetApps']();
 }
 
+export function GetProcessStatuses() {
+  return window['go']['main']['App']['GetProcessStatuses']();
+}
+
 export function GetServerInfo() {
   return window['go']['main']['App']['GetServerInfo']();
 }

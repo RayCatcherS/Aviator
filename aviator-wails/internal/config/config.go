@@ -1,10 +1,13 @@
 package config
 
 import (
+	"aviator-wails/internal/icons"
 	"encoding/json"
+	"log"
 	"os"
 	"path/filepath"
 	"sync"
+
 	"github.com/google/uuid"
 )
 
@@ -13,6 +16,7 @@ type App struct {
 	Name string `json:"name"`
 	Path string `json:"path"`
 	Args string `json:"args"`
+	Icon string `json:"icon,omitempty"` // Base64 encoded PNG icon
 }
 
 type ConfigManager struct {
@@ -26,7 +30,7 @@ func NewConfigManager() (*ConfigManager, error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	// AppData/Local/Aviator usually. On Windows UserConfigDir is AppData/Roaming by default
 	// but Python used LOCALAPPDATA. Let's try to match it.
 	// os.UserConfigDir() on Windows returns %AppData% (Roaming).
@@ -80,15 +84,24 @@ func (cm *ConfigManager) Save() error {
 
 func (cm *ConfigManager) AddApp(name, path, args string) App {
 	cm.mu.Lock()
+
+	// Extract icon from executable
+	iconBase64, err := icons.ExtractIconToBase64(path)
+	if err != nil {
+		log.Printf("Warning: Could not extract icon from %s: %v", path, err)
+		iconBase64 = "" // Empty icon if extraction fails
+	}
+
 	app := App{
 		ID:   uuid.New().String(),
 		Name: name,
 		Path: path,
 		Args: args,
+		Icon: iconBase64,
 	}
 	cm.Apps = append(cm.Apps, app)
 	cm.mu.Unlock()
-	
+
 	cm.Save()
 	return app
 }
@@ -98,6 +111,15 @@ func (cm *ConfigManager) UpdateApp(id, name, path, args string) bool {
 	found := false
 	for i, app := range cm.Apps {
 		if app.ID == id {
+			// If path changed, extract new icon
+			if app.Path != path {
+				iconBase64, err := icons.ExtractIconToBase64(path)
+				if err != nil {
+					log.Printf("Warning: Could not extract icon from %s: %v", path, err)
+					iconBase64 = app.Icon // Keep old icon if extraction fails
+				}
+				cm.Apps[i].Icon = iconBase64
+			}
 			cm.Apps[i].Name = name
 			cm.Apps[i].Path = path
 			cm.Apps[i].Args = args
@@ -106,7 +128,7 @@ func (cm *ConfigManager) UpdateApp(id, name, path, args string) bool {
 		}
 	}
 	cm.mu.Unlock()
-	
+
 	if found {
 		cm.Save()
 	}
@@ -123,7 +145,7 @@ func (cm *ConfigManager) RemoveApp(id string) {
 	}
 	cm.Apps = newApps
 	cm.mu.Unlock()
-	
+
 	cm.Save()
 }
 
@@ -139,7 +161,7 @@ func (cm *ConfigManager) GetApps() []App {
 func (cm *ConfigManager) GetAppByID(id string) (App, bool) {
 	cm.mu.RLock()
 	defer cm.mu.RUnlock()
-	
+
 	for _, app := range cm.Apps {
 		if app.ID == id {
 			return app, true

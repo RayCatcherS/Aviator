@@ -6,57 +6,126 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"sync"
 )
 
-// RunExecutable launches the application at the given path with arguments.
-// It starts the process and detaches it so it doesn't block the server.
-func RunExecutable(path string, args string) error {
-	// Debug logging
+// ProcessInfo tracks running processes
+type ProcessInfo struct {
+	AppID     string
+	AppName   string
+	Pid       int
+	IsRunning bool
+	cmd       *exec.Cmd
+}
+
+var (
+	runningProcesses = make(map[string]*ProcessInfo)
+	processMutex     sync.RWMutex
+)
+
+// RunExecutableWithTracking launches the application and tracks its process
+func RunExecutableWithTracking(appID, appName, path, args string) (int, error) {
 	fmt.Printf("[Launcher] Launching: %s Args: %s\n", path, args)
 
 	// Validate path exists
 	if _, err := os.Stat(path); os.IsNotExist(err) {
-		return fmt.Errorf("executable not found: %s", path)
+		return 0, fmt.Errorf("executable not found: %s", path)
 	}
 
-	// Prepare command
-	// On Windows, complex argument parsing can be tricky usually.
-	// But os/exec handles most of it.
-	// If args is a raw string, we might need to split it if we use Command(name, arg1, arg2...)
-	// However, windows often takes the whole command line.
-	// Let's try to split fields simply for now, similar to python's shlex or split.
-	// For better windows compatibility with spaces in args, might need care.
-	// Python `subprocess.Popen` with string args on Windows works well.
-	// Go `exec.Command` expects a slice of args.
-	
-	// Simple split by space (imperfect for quoted args, but a start)
-	// TODO: meaningful arg parsing if users use quotes.
+	// Parse arguments
 	var cmdArgs []string
 	if args != "" {
-		cmdArgs = strings.Fields(args) // This is naive, doesn't handle "quoted args"
+		cmdArgs = strings.Fields(args)
 	}
 
 	cmd := exec.Command(path, cmdArgs...)
-	
-	// Determine working directory (usually the folder containing the exe)
 	cmd.Dir = filepath.Dir(path)
-	
-	// Detach process logic?
-	// exec.Start() starts it. If we don't Wait(), it runs in background.
-	// But if the parent (us) dies, what happens? 
-	// On Windows, sending it to background usually works fine with Start unless we attach pipes.
-	
+
+	if err := cmd.Start(); err != nil {
+		return 0, err
+	}
+
+	pid := 0
+	if cmd.Process != nil {
+		pid = cmd.Process.Pid
+
+		// Store process info
+		processMutex.Lock()
+		runningProcesses[appID] = &ProcessInfo{
+			AppID:     appID,
+			AppName:   appName,
+			Pid:       pid,
+			IsRunning: true,
+			cmd:       cmd,
+		}
+		processMutex.Unlock()
+
+		// Monitor process in background
+		go monitorProcess(appID, cmd)
+	}
+
+	return pid, nil
+}
+
+// monitorProcess waits for the process to finish and updates status
+func monitorProcess(appID string, cmd *exec.Cmd) {
+	cmd.Wait() // This blocks until the process finishes
+
+	processMutex.Lock()
+	if info, exists := runningProcesses[appID]; exists {
+		info.IsRunning = false
+	}
+	processMutex.Unlock()
+
+	fmt.Printf("[Launcher] Process for app %s has terminated\n", appID)
+}
+
+// GetProcessStatus returns the status of a specific app
+func GetProcessStatus(appID string) (bool, int) {
+	processMutex.RLock()
+	defer processMutex.RUnlock()
+
+	if info, exists := runningProcesses[appID]; exists {
+		return info.IsRunning, info.Pid
+	}
+	return false, 0
+}
+
+// GetAllProcessStatuses returns status for all apps
+func GetAllProcessStatuses() map[string]bool {
+	processMutex.RLock()
+	defer processMutex.RUnlock()
+
+	statuses := make(map[string]bool)
+	for appID, info := range runningProcesses {
+		statuses[appID] = info.IsRunning
+	}
+	return statuses
+}
+
+// RunExecutable is the old function, kept for compatibility
+func RunExecutable(path string, args string) error {
+	fmt.Printf("[Launcher] Launching: %s Args: %s\n", path, args)
+
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		return fmt.Errorf("executable not found: %s", path)
+	}
+
+	var cmdArgs []string
+	if args != "" {
+		cmdArgs = strings.Fields(args)
+	}
+
+	cmd := exec.Command(path, cmdArgs...)
+	cmd.Dir = filepath.Dir(path)
+
 	if err := cmd.Start(); err != nil {
 		return err
 	}
-	
-	// We do NOT wait. 
-	// To avoid zombies in unix we'd need cleanup, but in Windows it's different.
-	// Actually, we should probably Release the process so we don't keep a handle.
+
 	if cmd.Process != nil {
 		cmd.Process.Release()
 	}
 
 	return nil
 }
-

@@ -3,31 +3,36 @@ package main
 import (
 	"aviator-wails/internal/config"
 	"aviator-wails/internal/discovery"
+	"aviator-wails/internal/processmon"
 	"aviator-wails/internal/server"
 	"context"
 	"fmt"
 	"log"
 	"net"
+	"time"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // App struct
 type App struct {
-	ctx           context.Context
-	config        *config.ConfigManager
-	server        *server.Server
-	discovery     *discovery.DiscoveryService
-	serverRunning bool
+	ctx            context.Context
+	config         *config.ConfigManager
+	server         *server.Server
+	discovery      *discovery.DiscoveryService
+	processMonitor *processmon.ProcessMonitor
+	serverRunning  bool
 }
 
 // NewApp creates a new App application struct
 func NewApp(cm *config.ConfigManager, srv *server.Server, ds *discovery.DiscoveryService) *App {
+	// Use the process monitor from server (shared instance)
 	return &App{
-		config:        cm,
-		server:        srv,
-		discovery:     ds,
-		serverRunning: false,
+		config:         cm,
+		server:         srv,
+		discovery:      ds,
+		processMonitor: srv.ProcessMonitor,
+		serverRunning:  false,
 	}
 }
 
@@ -35,6 +40,26 @@ func NewApp(cm *config.ConfigManager, srv *server.Server, ds *discovery.Discover
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 	log.Println("Aviator Wails app started")
+
+	// Start background process monitoring
+	go a.monitorProcesses()
+}
+
+// monitorProcesses polls for running processes every 3 seconds
+func (a *App) monitorProcesses() {
+	ticker := time.NewTicker(3 * time.Second)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-a.ctx.Done():
+			return
+		case <-ticker.C:
+			if err := a.processMonitor.Update(); err != nil {
+				log.Printf("Error updating process monitor: %v", err)
+			}
+		}
+	}
 }
 
 // shutdown is called when the app closes
@@ -55,17 +80,25 @@ func (a *App) GetApps() []config.App {
 
 // AddApp adds a new application to the configuration
 func (a *App) AddApp(name, path, args string) config.App {
-	return a.config.AddApp(name, path, args)
+	app := a.config.AddApp(name, path, args)
+	a.processMonitor.AddWatch(app.ID, app.Path)
+	return app
 }
 
 // UpdateApp updates an existing application
 func (a *App) UpdateApp(id, name, path, args string) bool {
-	return a.config.UpdateApp(id, name, path, args)
+	success := a.config.UpdateApp(id, name, path, args)
+	if success {
+		// Update the watch with new path
+		a.processMonitor.AddWatch(id, path)
+	}
+	return success
 }
 
 // RemoveApp removes an application from the configuration
 func (a *App) RemoveApp(id string) {
 	a.config.RemoveApp(id)
+	a.processMonitor.RemoveWatch(id)
 }
 
 // LaunchApp launches an application by ID
@@ -182,6 +215,11 @@ func (a *App) SelectFile() (string, error) {
 	}
 
 	return result, nil
+}
+
+// GetProcessStatuses returns the running status of all launched apps
+func (a *App) GetProcessStatuses() map[string]bool {
+	return a.processMonitor.GetAllStatuses()
 }
 
 // Helper function to get outbound IP

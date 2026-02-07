@@ -7,6 +7,7 @@
     <title>Aviator Control Deck</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="styles.css" rel="stylesheet">
+    <link href="led-styles.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
     <script>
@@ -46,8 +47,8 @@
         <header id="main-header">
             <!-- Main Content Container -->
             <div class="header-content w-full">
-                <h1
-                    class="logo-large font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-500 drop-shadow-lg text-center">
+                <h1 class="logo-large font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-500 drop-shadow-lg text-center"
+                    style="font-size: 4rem;">
                     Aviator
                 </h1>
 
@@ -55,10 +56,10 @@
                 </p>
 
                 <div id="status-indicator" class="status-badge mt-4 flex justify-center w-full">
-                    <div
+                    <div id="connection-badge"
                         class="inline-flex items-center px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-sm">
-                        <span class="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse"></span>
-                        <span class="status-text">Connected to <span id="hostname"
+                        <span id="status-dot" class="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse"></span>
+                        <span id="status-text" class="status-text">Connected to <span id="hostname"
                                 class="font-bold ml-1">...</span></span>
                     </div>
                 </div>
@@ -86,6 +87,33 @@
                 </div>
             </div>
         </header>
+
+        <!-- Offline Warning Banner -->
+        <div id="offline-banner"
+            class="hidden mt-6 p-4 rounded-xl bg-red-500/10 border border-red-500/30 backdrop-blur-sm">
+            <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3 text-red-400">
+                    <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <div>
+                        <p class="font-semibold">Server Offline</p>
+                        <p class="text-sm text-red-300/80">The Aviator server is not responding. Please start the
+                            server on the host PC.</p>
+                    </div>
+                </div>
+                <button id="btn-retry" onclick="retryConnection()"
+                    class="px-4 py-2 rounded-lg bg-red-500/20 hover:bg-red-500/30 border border-red-400/50 text-red-300 font-semibold transition-all flex items-center gap-2 whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed">
+                    <svg id="retry-icon" class="w-4 h-4 transition-transform duration-700" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    <span id="retry-text">Retry Connection</span>
+                </button>
+            </div>
+        </div>
 
         <!-- Grid Container: Default 2 cols, MD 3 cols -->
         <div id="app-grid" class="grid grid-cols-2 md:grid-cols-3 gap-6">

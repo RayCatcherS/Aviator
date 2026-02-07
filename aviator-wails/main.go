@@ -3,6 +3,7 @@ package main
 import (
 	"aviator-wails/internal/config"
 	"aviator-wails/internal/discovery"
+	"aviator-wails/internal/processmon"
 	"aviator-wails/internal/server"
 	"aviator-wails/internal/web"
 	"embed"
@@ -16,6 +17,15 @@ import (
 
 //go:embed all:frontend/dist
 var assets embed.FS
+
+// NewProcessMonitor initializes process monitor with all configured apps
+func NewProcessMonitor(cm *config.ConfigManager) *processmon.ProcessMonitor {
+	pm := processmon.NewProcessMonitor()
+	for _, app := range cm.GetApps() {
+		pm.AddWatch(app.ID, app.Path)
+	}
+	return pm
+}
 
 func main() {
 	log.Println("Initializing Aviator (Wails)...")
@@ -33,13 +43,16 @@ func main() {
 		log.Fatalf("Failed to load embedded assets: %v", err)
 	}
 
-	// 3. Initialize Server (but don't start it automatically - user controls via UI)
-	srv := server.NewServer(cm, webFS)
+	// 3. Create Process Monitor
+	pm := NewProcessMonitor(cm)
 
-	// 4. Discovery service will be started when user starts server
+	// 4. Initialize Server (but don't start it automatically - user controls via UI)
+	srv := server.NewServer(cm, webFS, pm)
+
+	// 5. Discovery service will be started when user starts server
 	var ds *discovery.DiscoveryService = nil
 
-	// 5. Create Wails App
+	// 6. Create Wails App with process monitor
 	app := NewApp(cm, srv, ds)
 
 	log.Println("Aviator initialized. Use 'Start Server' button to enable web access.")
@@ -47,9 +60,9 @@ func main() {
 	// 6. Run Wails Application
 	err = wails.Run(&options.App{
 		Title:     "Aviator",
-		Width:     900,
+		Width:     700,
 		Height:    700,
-		MinWidth:  750,
+		MinWidth:  650,
 		MinHeight: 550,
 		Frameless: true,
 		AssetServer: &assetserver.Options{

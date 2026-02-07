@@ -6,6 +6,8 @@ export function AddApp(arg1:string,arg2:string,arg3:string):Promise<config.App>;
 
 export function GetApps():Promise<Array<config.App>>;
 
+export function GetProcessStatuses():Promise<Record<string, boolean>>;
+
 export function GetServerInfo():Promise<Record<string, any>>;
 
 export function LaunchApp(arg1:string):Promise<void>;

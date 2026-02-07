@@ -1,19 +1,27 @@
 <template>
-  <div id="app">
+  <div id="app" class="h-screen w-screen flex flex-col bg-slate-900 text-slate-100 overflow-hidden relative selection:bg-cyan-500/30 font-sans">
+    
+    <!-- Animated Blobs Background -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-purple-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div class="absolute top-[-10%] right-[-10%] w-96 h-96 bg-cyan-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div class="absolute bottom-[-10%] left-[20%] w-96 h-96 bg-pink-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+    </div>
+
     <!-- Custom Title Bar (Frameless) -->
-    <div class="title-bar">
-      <div class="title-bar-left">
-        <span class="title-text">Aviator</span>
+    <div class="title-bar z-50 flex items-center justify-between h-8 bg-black/20 backdrop-blur-md border-b border-white/5 px-3 select-none flex-shrink-0">
+      <div class="title-bar-left flex items-center gap-2">
+        <span class="text-xs font-semibold text-white/90 tracking-wide">Aviator</span>
       </div>
-      <div class="title-bar-controls">
-        <button class="title-btn" @click="minimizeWindow" title="Minimize">
-          <svg width="12" height="12" viewBox="0 0 12 12"><line x1="0" y1="6" x2="12" y2="6" stroke="currentColor" stroke-width="1"/></svg>
+      <div class="title-bar-controls flex gap-[1px]">
+        <button class="title-btn w-12 h-8 flex items-center justify-center bg-transparent hover:bg-white/10 text-white/80 hover:text-white transition-colors" @click="minimizeWindow" title="Minimize">
+          <svg width="10" height="10" viewBox="0 0 12 12"><line x1="0" y1="6" x2="12" y2="6" stroke="currentColor" stroke-width="1"/></svg>
         </button>
-        <button class="title-btn" @click="toggleMaximize" title="Maximize">
-          <svg width="12" height="12" viewBox="0 0 12 12"><rect x="1" y="1" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+        <button class="title-btn w-12 h-8 flex items-center justify-center bg-transparent hover:bg-white/10 text-white/80 hover:text-white transition-colors" @click="toggleMaximize" title="Maximize">
+          <svg width="10" height="10" viewBox="0 0 12 12"><rect x="1" y="1" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1"/></svg>
         </button>
-        <button class="title-btn close-btn" @click="closeWindow" title="Close">
-          <svg width="12" height="12" viewBox="0 0 12 12">
+        <button class="title-btn w-12 h-8 flex items-center justify-center bg-transparent hover:bg-red-600 text-white/80 hover:text-white transition-colors" @click="closeWindow" title="Close">
+          <svg width="10" height="10" viewBox="0 0 12 12">
             <line x1="1" y1="1" x2="11" y2="11" stroke="currentColor" stroke-width="1"/>
             <line x1="11" y1="1" x2="1" y2="11" stroke="currentColor" stroke-width="1"/>
           </svg>
@@ -21,128 +29,151 @@
       </div>
     </div>
 
-    <!-- Content Area with Padding -->
-    <div style="flex: 1; display: flex; flex-direction: column; gap: var(--spacing-md); padding: var(--spacing-md) var(--spacing-lg) var(--spacing-lg) var(--spacing-lg); overflow: hidden;">
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col p-6 gap-6 overflow-hidden z-10 relative">
+      
       <!-- Status Header Panel -->
-      <div class="glass-panel fade-in" style="flex-shrink: 0;">
-        <div class="flex justify-between items-center">
-          <div class="flex flex-col gap-sm">
-            <h1 style="font-size: 28px; font-weight: 700; margin: 0;">Aviator</h1>
-            <div class="status-badge" :class="serverInfo.status">
-              {{ serverInfo.status.toUpperCase() }}
+      <div class="glass-card p-6 flex-shrink-0">
+        <div class="flex flex-row justify-between items-center gap-6">
+          <div class="flex flex-col gap-3 flex-1 min-w-0">
+            <div class="flex items-center gap-4">
+              <h1 class="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-500 drop-shadow-lg">Aviator</h1>
+              <div class="px-3 py-1 rounded-full text-xs font-bold border" 
+                   :class="serverInfo.running ? 'bg-green-500/10 border-green-500/20 text-green-400' : 'bg-slate-500/10 border-slate-500/20 text-slate-400'">
+                {{ serverInfo.status.toUpperCase() }}
+              </div>
             </div>
             
             <!-- Server Control Buttons -->
-            <div class="flex gap-sm" style="margin-top: 12px;">
+            <div class="flex gap-3 mt-2">
               <button 
                 @click="startServer" 
                 :disabled="serverInfo.running"
-                class="glass-button success"
+                class="glass-button success flex-none flex items-center justify-center gap-2"
                 :class="{ 'opacity-50 cursor-not-allowed': serverInfo.running }"
               >
-                ▶️ Start Server
+                <span class="text-lg">▶️</span> Start Server
               </button>
               <button 
                 @click="stopServer"
                 :disabled="!serverInfo.running"
-                class="glass-button"
+                class="glass-button flex-none flex items-center justify-center gap-2 border-red-500/40 text-red-100 hover:bg-red-500/20"
                 :class="{ 'opacity-50 cursor-not-allowed': !serverInfo.running }"
-               style="background: rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.3);"
               >
-                ⏹️ Stop Server
+                <span class="text-lg">⏹️</span> Stop Server
               </button>
             </div>
             
-            <div v-if="serverInfo.running" class="flex flex-col gap-sm" style="margin-top: 12px;">
-              <div style="font-size: 13px; opacity: 0.9;">
-                <strong>Local:</strong> <a :href="serverInfo.localURL" @click.prevent="openURL(serverInfo.localURL)">{{ serverInfo.localURL }}</a>
+            <div v-if="serverInfo.running" class="flex flex-col gap-1 mt-2 text-sm text-slate-300 min-w-0">
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="font-semibold text-slate-400 w-16 flex-shrink-0">Local:</span> 
+                <a :href="serverInfo.localURL" @click.prevent="openURL(serverInfo.localURL)" class="hover:text-cyan-400 transition-colors truncate block flex-1" :title="serverInfo.localURL">{{ serverInfo.localURL }}</a>
               </div>
-              <div style="font-size: 13px; opacity: 0.9;">
-                <strong>Network:</strong> <a :href="serverInfo.networkURL" @click.prevent="openURL(serverInfo.networkURL)">{{ serverInfo.networkURL }}</a>
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="font-semibold text-slate-400 w-16 flex-shrink-0">Network:</span> 
+                <a :href="serverInfo.networkURL" @click.prevent="openURL(serverInfo.networkURL)" class="hover:text-cyan-400 transition-colors truncate block flex-1" :title="serverInfo.networkURL">{{ serverInfo.networkURL }}</a>
               </div>
             </div>
-            <div v-else style="margin-top: 12px; font-size: 13px; opacity: 0.7;">
+            <div v-else class="mt-2 text-sm text-slate-500 italic">
               Server stopped. Click "Start Server" to enable web access.
             </div>
           </div>
           
           <!-- QR Code -->
-          <div v-if="serverInfo.running" class="qr-container glass-card" style="padding: 16px; cursor: default;">
-            <canvas ref="qrCanvas" width="140" height="140"></canvas>
+          <div v-if="serverInfo.running" class="glass-card p-4 rounded-xl flex-shrink-0 bg-white/5">
+            <canvas ref="qrCanvas" class="block w-[140px] h-[140px]"></canvas>
           </div>
-          <div v-else class="qr-container glass-card" style="padding: 16px; width: 172px; height: 172px; display: flex; align-items: center; justify-content: center; opacity: 0.3;">
-            <div style="text-align: center;">
-              <div style="font-size: 48px;">🔒</div>
-              <div style="font-size: 11px; margin-top: 8px;">Server Offline</div>
-            </div>
+          <div v-else class="glass-card w-[172px] h-[172px] flex flex-col items-center justify-center gap-2 opacity-30 flex-shrink-0">
+            <div class="text-5xl">🔒</div>
+            <div class="text-xs font-medium">Server Offline</div>
           </div>
         </div>
       </div>
 
       <!-- Applications Section -->
-      <div class="glass-panel" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
-      <div class="flex justify-between items-center" style="margin-bottom: 16px;">
-        <h2 style="font-size: 20px; font-weight: 600; margin: 0;">Applications</h2>
-        <button @click="openAddDialog" class="glass-button primary">
-          + Add App
-        </button>
-      </div>
+      <div class="glass-card flex-1 flex flex-col overflow-hidden min-h-0">
+        <div class="p-6 pb-4 flex justify-between items-center border-b border-white/5">
+          <h2 class="text-xl font-semibold text-slate-200">Applications</h2>
+          <button @click="openAddDialog" class="glass-button primary flex items-center gap-2 text-sm">
+            <span class="text-lg">+</span> Add App
+          </button>
+        </div>
 
-      <!-- Apps Grid -->
-      <div class="app-grid" style="flex: 1; overflow-y: auto;">
-        <div v-for="app in apps" :key="app.id" class="app-card glass-card">
-          <div class="flex justify-between items-center" style="margin-bottom: 12px;">
-            <h3 style="font-size: 16px; font-weight: 600; margin: 0;">{{ app.name }}</h3>
-            <div class="flex gap-sm">
-              <button @click="editApp(app)" class="icon-button glass-button">✏️</button>
-              <button @click="removeApp(app.id)" class="icon-button glass-button">🗑️</button>
+        <!-- Apps Grid -->
+        <div class="flex-1 overflow-y-auto p-6 app-grid-container custom-scrollbar">
+          <div v-if="apps.length > 0" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+            <div v-for="app in apps" :key="app.id" class="glass-card p-4 hover:border-white/20 transition-all group">
+              <div class="flex gap-4 items-start">
+                <!-- App Icon -->
+                <div v-if="app.icon" class="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 bg-black/20 p-2">
+                  <img :src="'data:image/png;base64,' + app.icon" :alt="app.name" class="w-full h-full object-contain" />
+                </div>
+                <div v-else class="w-16 h-16 rounded-xl flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-cyan-500/20 to-purple-500/20 border border-white/10">
+                  <span class="text-2xl font-bold text-white/80">{{ app.name.substring(0, 2).toUpperCase() }}</span>
+                </div>
+                
+                <!-- App Info -->
+                <div class="flex-1 min-w-0">
+                  <div class="flex justify-between items-start mb-1">
+                    <div class="flex items-center gap-2">
+                      <!-- LED Status Indicator -->
+                      <div class="status-led" :class="{ 'led-running': processStatuses[app.id] }" :title="processStatuses[app.id] ? 'Running' : 'Stopped'"></div>
+                      <h3 class="font-semibold text-lg text-slate-100 truncate group-hover:text-cyan-400 transition-colors">{{ app.name }}</h3>
+                    </div>
+                    <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button @click="editApp(app)" class="p-1.5 rounded hover:bg-white/10 text-slate-400 hover:text-white transition-colors" title="Edit">✏️</button>
+                      <button @click="removeApp(app.id)" class="p-1.5 rounded hover:bg-red-500/20 text-slate-400 hover:text-red-400 transition-colors" title="Remove">🗑️</button>
+                    </div>
+                  </div>
+                  <div class="text-xs text-slate-500 mb-2 font-mono truncate" :title="app.path">
+                    {{ app.path }}
+                  </div>
+                  <div v-if="app.args" class="text-[10px] text-slate-600 font-mono truncate">
+                    Args: {{ app.args }}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div style="font-size: 12px; opacity: 0.8; margin-bottom: 8px; word-break: break-all;">
-            {{ app.path }}
-          </div>
-          <div v-if="app.args" style="font-size: 11px; opacity: 0.6;">
-            Args: {{ app.args }}
-          </div>
-        </div>
 
-        <!-- Empty state -->
-        <div v-if="apps.length === 0" style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; opacity: 0.7;">
-          <div style="font-size: 48px; margin-bottom: 16px;">📱</div>
-          <h3 style="font-size: 18px; margin-bottom: 8px;">No applications yet</h3>
-          <p style="opacity: 0.8;">Click "Add App" to get started</p>
+          <!-- Empty state -->
+          <div v-else class="h-full flex flex-col items-center justify-center text-slate-500 opacity-60">
+            <div class="text-6xl mb-4">📱</div>
+            <h3 class="text-xl font-medium mb-2">No applications yet</h3>
+            <p>Click "Add App" to get started</p>
+          </div>
         </div>
       </div>
     </div>
-    </div>
-    <!-- End Content Area -->
 
     <!-- Add/Edit Dialog -->
     <div v-if="showDialog" class="dialog-overlay" @click.self="closeDialog">
-      <div class="dialog glass-panel">
-        <h2 style="margin-bottom: 20px;">{{ editingApp ? 'Edit' : 'Add' }} Application</h2>
+      <div class="glass-card p-8 rounded-2xl w-full max-w-md shadow-2xl m-4 animate-fade-in-up">
+        <h2 class="text-2xl font-bold mb-6 text-white">{{ editingApp ? 'Edit' : 'Add' }} Application</h2>
         
-        <div class="form-group">
-          <label>Application Name *</label>
-          <input v-model="dialogData.name" class="glass-input" placeholder="My App" />
-        </div>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-semibold text-slate-400 mb-2">Application Name *</label>
+            <input v-model="dialogData.name" class="glass-input" placeholder="My App" />
+          </div>
 
-        <div class="form-group">
-          <label>Executable Path *</label>
-          <div class="flex gap-sm">
-            <input v-model="dialogData.path" class="glass-input" placeholder="C:\path\to\app.exe" />
-            <button @click="selectFile" class="glass-button">Browse</button>
+          <div>
+            <label class="block text-sm font-semibold text-slate-400 mb-2">Executable Path *</label>
+            <div class="flex gap-2">
+              <input v-model="dialogData.path" class="glass-input" placeholder="C:\path\to\app.exe" />
+              <button @click="selectFile" class="glass-button whitespace-nowrap">Browse</button>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-slate-400 mb-2">Arguments (optional)</label>
+            <input v-model="dialogData.args" class="glass-input" placeholder="--flag value" />
           </div>
         </div>
 
-        <div class="form-group">
-          <label>Arguments (optional)</label>
-          <input v-model="dialogData.args" class="glass-input" placeholder="--flag value" />
-        </div>
-
-        <div class="flex gap-md" style="margin-top: 24px;">
-          <button @click="closeDialog" class="glass-button" style="flex: 1;">Cancel</button>
-          <button @click="saveApp" class="glass-button primary" style="flex: 1;">Save</button>
+        <div class="flex gap-4 mt-8">
+          <button @click="closeDialog" class="glass-button flex-1 bg-white/5 hover:bg-white/10">Cancel</button>
+          <button @click="saveApp" class="glass-button primary flex-1 font-bold">Save</button>
         </div>
       </div>
     </div>
@@ -150,12 +181,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { GetApps, AddApp, UpdateApp, RemoveApp, GetServerInfo, SelectFile, StartServer, StopServer } from '../wailsjs/go/main/App';
+import { ref, onMounted, onUnmounted } from 'vue';
+import { GetApps, AddApp, UpdateApp, RemoveApp, GetServerInfo, SelectFile, StartServer, StopServer, GetProcessStatuses } from '../wailsjs/go/main/App';
 import { BrowserOpenURL, EventsOn, WindowMinimise, WindowToggleMaximise, Quit } from '../wailsjs/runtime/runtime';
 import QRCode from 'qrcode';
 
 const apps = ref([]);
+const processStatuses = ref({});
 const serverInfo = ref({
   localURL: 'http://localhost:8000',
   networkURL: 'http://localhost:8000',
@@ -172,10 +204,15 @@ const dialogData = ref({
 });
 
 const qrCanvas = ref(null);
+let statusPollInterval = null;
 
 onMounted(async () => {
   await loadApps();
   await loadServerInfo();
+  await loadProcessStatuses();
+  
+  // Poll process statuses every 2 seconds
+  statusPollInterval = setInterval(loadProcessStatuses, 2000);
   
   // Listen for server events
   EventsOn('server:started', () => {
@@ -191,8 +228,22 @@ onMounted(async () => {
   }
 });
 
+onUnmounted(() => {
+  if (statusPollInterval) {
+    clearInterval(statusPollInterval);
+  }
+});
+
 async function loadApps() {
   apps.value = await GetApps();
+}
+
+async function loadProcessStatuses() {
+  try {
+    processStatuses.value = await GetProcessStatuses();
+  } catch (err) {
+    console.error('Failed to load process statuses:', err);
+  }
 }
 
 async function loadServerInfo() {
@@ -326,107 +377,35 @@ function closeWindow() {
 </script>
 
 <style scoped>
-/* Custom Title Bar */
+/* Wails Window Drag Regions */
 .title-bar {
   --wails-draggable: drag;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 32px;
-  background: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 0 12px;
-  user-select: none;
-  flex-shrink: 0;
-}
-
-.title-bar-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.title-text {
-  font-size: 13px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.9);
-  letter-spacing: 0.5px;
 }
 
 .title-bar-controls {
   --wails-draggable: no-drag;
-  display: flex;
-  gap: 1px;
 }
 
 .title-btn {
-  width: 46px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  border: none;
-  color: rgba(255, 255, 255, 0.8);
-  cursor: pointer;
-  transition: all 0.15s ease;
-  outline: none;
+  -webkit-app-region: no-drag;
 }
 
-.title-btn:hover {
+/* Custom Scrollbar for the app grid */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.1);
-  color: white;
+  border-radius: 4px;
 }
 
-.title-btn.close-btn:hover {
-  background: #e81123;
-  color: white;
-}
-
-.title-btn svg {
-  width: 12px;
-  height: 12px;
-}
-
-.qr-container canvas {
-  display: block;
-}
-
-.icon-button {
-  padding: 6px 10px;
-  font-size: 14px;
-}
-
-.dialog-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.dialog {
-  width: 500px;
-  max-width: 90%;
-  animation: fadeIn 0.3s ease-out;
-}
-
-.form-group {
-  margin-bottom: 16px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-size: 13px;
-  font-weight: 600;
-  opacity: 0.9;
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 </style>

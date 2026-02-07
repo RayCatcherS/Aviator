@@ -5,6 +5,7 @@ export namespace config {
 	    name: string;
 	    path: string;
 	    args: string;
+	    icon?: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new App(source);
@@ -16,6 +17,7 @@ export namespace config {
 	        this.name = source["name"];
 	        this.path = source["path"];
 	        this.args = source["args"];
+	        this.icon = source["icon"];
 	    }
 	}
 
