@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebApp Aviator - Documentation</title>
+    <title>Aviator - Documentation</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="style.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -19,7 +19,7 @@
                 <h2
                     class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 tracking-widest uppercase mb-1">
                     Aviator</h2>
-                <p class="text-xs text-slate-500 font-mono">DOCS v1.0</p>
+                <p class="text-xs text-slate-500 font-mono">DOCS v2.0</p>
             </a>
         </div>
         <nav class="px-4 space-y-1">
@@ -38,33 +38,29 @@
 
         <section>
             <p class="text-xl font-light mb-8 opacity-80">
-                WebApp Aviator is a premium local network solution designed to bridge the gap between your mobile
-                devices and your Windows desktop applications.
+                Aviator is a modern desktop application that lets you launch Windows applications remotely from any device on your local network, powered by Wails and featuring a beautiful glassmorphism UI.
             </p>
 
             <div class="grid grid-cols-2 gap-6 mb-12">
                 <div class="card">
                     <h3 class="!mt-0 mb-3 text-white"><i class="fas fa-rocket text-cyan-400 mr-2"></i> Launch Remotely
                     </h3>
-                    <p class="text-sm !mb-0">Trigger games, efficiency tools, or scripts on your PC directly from your
-                        phone's browser.</p>
+                    <p class="text-sm !mb-0">Control your PC applications from your phone's browser. Perfect for launching games, tools, or scripts from anywhere in your home.</p>
                 </div>
                 <div class="card">
                     <h3 class="!mt-0 mb-3 text-white"><i class="fas fa-satellite-dish text-cyan-400 mr-2"></i> Zero
                         Config</h3>
-                    <p class="text-sm !mb-0">Automatic discovery via mDNS/Zeroconf. No IP typing required (just scan the
-                        QR code).</p>
+                    <p class="text-sm !mb-0">Automatic discovery via mDNS/Zeroconf. No IP typing required—just scan the QR code and you're connected.</p>
                 </div>
                 <div class="card">
                     <h3 class="!mt-0 mb-3 text-white"><i class="fas fa-swatchbook text-cyan-400 mr-2"></i> Premium UI
                     </h3>
-                    <p class="text-sm !mb-0">Glassmorphism design that looks native on iOS and Android devices.</p>
+                    <p class="text-sm !mb-0">Glassmorphism design with smooth animations and blur effects. Native desktop experience powered by Wails.</p>
                 </div>
                 <div class="card">
-                    <h3 class="!mt-0 mb-3 text-white"><i class="fas fa-terminal text-cyan-400 mr-2"></i> Custom
-                        Arguments</h3>
-                    <p class="text-sm !mb-0">Launch apps with specific flags (e.g. <code>-bigpicture</code>,
-                        <code>--incognito</code>).</p>
+                    <h3 class="!mt-0 mb-3 text-white"><i class="fas fa-bolt text-cyan-400 mr-2"></i> Native
+                        Performance</h3>
+                    <p class="text-sm !mb-0">Built with Go and Vue3. Fast, lightweight (~12 MB), with native file dialogs and system integration.</p>
                 </div>
             </div>
 
@@ -74,23 +70,46 @@
                     <div class="flex gap-4 items-center">
                         <span
                             class="bg-slate-900 w-8 h-8 flex items-center justify-center rounded-full text-cyan-500 font-bold border border-cyan-500/30">1</span>
-                        <p class="!mb-0">Navigate to the project root.</p>
+                        <p class="!mb-0">Download <code>aviator-wails.exe</code> from the releases page.</p>
                     </div>
                     <div class="flex gap-4 items-center">
                         <span
                             class="bg-slate-900 w-8 h-8 flex items-center justify-center rounded-full text-cyan-500 font-bold border border-cyan-500/30">2</span>
-                        <p class="!mb-0">Double click the <code>start_aviator.bat</code> script.</p>
+                        <p class="!mb-0">Launch the application—the interface opens automatically.</p>
                     </div>
                     <div class="flex gap-4 items-center">
                         <span
                             class="bg-slate-900 w-8 h-8 flex items-center justify-center rounded-full text-cyan-500 font-bold border border-cyan-500/30">3</span>
-                        <p class="!mb-0">Add your favorite applications using the Desktop GUI.</p>
+                        <p class="!mb-0">Click "Add App" to add your favorite Windows applications.</p>
                     </div>
                     <div class="flex gap-4 items-center">
                         <span
                             class="bg-slate-900 w-8 h-8 flex items-center justify-center rounded-full text-cyan-500 font-bold border border-cyan-500/30">4</span>
-                        <p class="!mb-0">Scan the QR code with your phone!</p>
+                        <p class="!mb-0">Start the server and scan the QR code with your phone!</p>
                     </div>
+                </div>
+            </div>
+
+            <div class="mt-8 grid grid-cols-2 gap-6">
+                <div class="card bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border-indigo-500/30">
+                    <h3 class="!mt-0 mb-3"><i class="fas fa-desktop text-indigo-400 mr-2"></i>Desktop App</h3>
+                    <p class="text-sm mb-4">Native Windows application built with Wails, Go, and Vue 3. Features modern glassmorphism design and system tray integration.</p>
+                    <ul class="text-sm space-y-1 text-slate-400">
+                        <li>• Manage applications with native file dialogs</li>
+                        <li>• Start/Stop HTTP server</li>
+                        <li>• View QR code and network URLs</li>
+                        <li>• Runs in system tray when minimized</li>
+                    </ul>
+                </div>
+                <div class="card bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border-cyan-500/30">
+                    <h3 class="!mt-0 mb-3"><i class="fas fa-mobile-alt text-cyan-400 mr-2"></i>Mobile Web</h3>
+                    <p class="text-sm mb-4">Beautiful web interface accessible from any device on your network. Optimized for mobile browsers with touch interactions.</p>
+                    <ul class="text-sm space-y-1 text-slate-400">
+                        <li>• Glassmorphism cards with animations</li>
+                        <li>• Touch-optimized launch buttons</li>
+                        <li>• Responsive design for all screen sizes</li>
+                        <li>• Works on iOS, Android, and desktop browsers</li>
+                    </ul>
                 </div>
             </div>
         </section>

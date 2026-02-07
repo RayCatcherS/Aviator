@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Architecture - WebApp Aviator Docs</title>
+    <title>Architecture - Aviator Docs</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="style.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -23,7 +23,7 @@
                 <h2
                     class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 tracking-widest uppercase mb-1">
                     Aviator</h2>
-                <p class="text-xs text-slate-500 font-mono">DOCS v1.0</p>
+                <p class="text-xs text-slate-500 font-mono">DOCS v2.0</p>
             </a>
         </div>
         <nav class="px-4 space-y-1">
@@ -41,101 +41,173 @@
                 <i class="fas fa-layer-group text-4xl text-purple-400"></i>
             </div>
             <h1>System Architecture</h1>
-            <p class="text-xl text-slate-400 max-w-2xl mx-auto">A modern, lightweight design bridging pure Web
-                Technologies with Windows Native API.</p>
+            <p class="text-xl text-slate-400 max-w-2xl mx-auto">A modern hybrid architecture combining native Go
+                performance with Vue 3 reactivity, bridged by Wails.</p>
         </header>
 
         <section>
             <h2><i class="fas fa-project-diagram text-cyan-500"></i> Data Flow</h2>
-            <p>WebApp Aviator operates on a strictly local loop. No data leaves the network.</p>
+            <p>Aviator combines a native desktop application with a web server for remote access. All data stays within
+                your local network.</p>
 
             <div class="bg-slate-950 p-8 rounded-xl border border-slate-800 my-8 shadow-inner overflow-hidden">
                 <pre class="mermaid">
-    graph LR
-        subgraph Mobile
-            User(User) -->|Taps Icon| Client[Browser]
+    graph TB
+        subgraph Desktop["Desktop Application (Wails)"]
+            Vue[Vue 3 UI] <-->|Bridge| Go[Go Backend]
+            Go --> Config[Config Manager]
+            Go --> Server[HTTP Server]
+            Go --> Discovery[mDNS Service]
         end
 
-        subgraph HostPC [Host PC]
-            Client -->|HTTP /api/launch| Server[Python Server]
-            Server -->|Subprocess| OS[Windows OS]
-            OS -->|Exec| App[Target App .exe]
-            Server -.->|mDNS Broadcast| Client
+        subgraph Mobile["Mobile Device"]
+            Browser[Mobile Browser] -->|HTTP /api/launch| Server
+            Server -.->|mDNS Broadcast| Browser
         end
+
+        Server -->|os/exec| Windows[Windows OS]
+        Windows -->|Launch| App[Target Application]
 
         linkStyle 0 stroke:#06b6d4,stroke-width:2px;
-        linkStyle 1 stroke:#22d3ee,stroke-width:2px,fill:none;
-        linkStyle 3 stroke:#f472b6,stroke-width:2px,stroke-dasharray: 5 5;
+        linkStyle 3 stroke:#22d3ee,stroke-width:2px;
+        linkStyle 4 stroke:#f472b6,stroke-width:2px,stroke-dasharray: 5 5;
                 </pre>
             </div>
 
             <h2><i class="fas fa-cubes text-yellow-500"></i> Core Components</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
 
-                <!-- Server Card -->
+                <!-- Wails Desktop App -->
                 <div class="card group">
                     <div class="flex items-center gap-4 mb-4 border-b border-slate-700 pb-4">
-                        <div class="bg-yellow-500/10 p-2 rounded text-yellow-500"><i class="fab fa-python text-2xl"></i>
+                        <div class="bg-cyan-500/10 p-2 rounded text-cyan-500"><i
+                                class="fas fa-window-maximize text-2xl"></i>
                         </div>
                         <div>
-                            <h3 class="text-lg font-bold text-white !mt-0 !mb-0">The Host (Server)</h3>
-                            <span class="text-xs text-slate-500 uppercase tracking-widest">Backend</span>
+                            <h3 class="text-lg font-bold text-white !mt-0 !mb-0">Desktop Application</h3>
+                            <span class="text-xs text-slate-500 uppercase tracking-widest">Wails Frontend</span>
                         </div>
                     </div>
                     <ul class="space-y-3">
                         <li class="flex items-start gap-3">
-                            <i class="fas fa-bolt text-yellow-500 mt-1"></i>
-                            <div><strong class="text-white">FastAPI</strong><br /><span
-                                    class="text-sm text-slate-400">High-performance async server handling REST
-                                    requests.</span></div>
+                            <i class="fab fa-vuejs text-cyan-500 mt-1"></i>
+                            <div><strong class="text-white">Vue 3</strong><br /><span
+                                    class="text-sm text-slate-400">Reactive UI with composition API and modern component
+                                    architecture.</span></div>
                         </li>
                         <li class="flex items-start gap-3">
-                            <i class="fas fa-window-maximize text-yellow-500 mt-1"></i>
-                            <div><strong class="text-white">Tkinter GUI</strong><br /><span
-                                    class="text-sm text-slate-400">Lightweight management interface running on the main
-                                    thread.</span></div>
+                            <i class="fas fa-paint-brush text-cyan-500 mt-1"></i>
+                            <div><strong class="text-white">Glassmorphism CSS</strong><br /><span
+                                    class="text-sm text-slate-400">Custom design system with gradient backgrounds, blur
+                                    effects, and smooth transitions.</span></div>
                         </li>
                         <li class="flex items-start gap-3">
-                            <i class="fas fa-network-wired text-yellow-500 mt-1"></i>
-                            <div><strong class="text-white">Zeroconf (mDNS)</strong><br /><span
-                                    class="text-sm text-slate-400">Broadcasts `_aviator._tcp` for auto-discovery.</span>
+                            <i class="fas fa-qrcode text-cyan-500 mt-1"></i>
+                            <div><strong class="text-white">QR Code Generation</strong><br /><span
+                                    class="text-sm text-slate-400">Instant mobile connection via scannable QR
+                                    codes.</span>
                             </div>
                         </li>
                     </ul>
                 </div>
 
-                <!-- Client Card -->
+                <!-- Go Backend -->
                 <div class="card group">
                     <div class="flex items-center gap-4 mb-4 border-b border-slate-700 pb-4">
-                        <div class="bg-cyan-500/10 p-2 rounded text-cyan-500"><i class="fab fa-html5 text-2xl"></i>
+                        <div class="bg-blue-500/10 p-2 rounded text-blue-500"><i class="fas fa-cogs text-2xl"></i>
                         </div>
                         <div>
-                            <h3 class="text-lg font-bold text-white !mt-0 !mb-0">The Client (Web)</h3>
-                            <span class="text-xs text-slate-500 uppercase tracking-widest">Frontend</span>
+                            <h3 class="text-lg font-bold text-white !mt-0 !mb-0">Go Backend</h3>
+                            <span class="text-xs text-slate-500 uppercase tracking-widest">Wails Backend</span>
                         </div>
                     </div>
                     <ul class="space-y-3">
                         <li class="flex items-start gap-3">
-                            <i class="fas fa-code text-cyan-500 mt-1"></i>
-                            <div><strong class="text-white">Vanilla Stack</strong><br /><span
-                                    class="text-sm text-slate-400">Pure HTML/JS. No Node.js build steps required. Served
-                                    as static files.</span></div>
+                            <i class="fas fa-server text-blue-500 mt-1"></i>
+                            <div><strong class="text-white">HTTP Server</strong><br /><span
+                                    class="text-sm text-slate-400">Embedded server serving static files and REST API
+                                    endpoints.</span></div>
                         </li>
                         <li class="flex items-start gap-3">
-                            <i class="fas fa-paint-brush text-cyan-500 mt-1"></i>
-                            <div><strong class="text-white">Tailwind CSS</strong><br /><span
-                                    class="text-sm text-slate-400">Utility-first styling loaded via CDN for rapid UI
-                                    development.</span></div>
+                            <i class="fas fa-file-code text-blue-500 mt-1"></i>
+                            <div><strong class="text-white">Config Manager</strong><br /><span
+                                    class="text-sm text-slate-400">JSON-based persistence in %LOCALAPPDATA% with
+                                    thread-safe operations.</span></div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-network-wired text-blue-500 mt-1"></i>
+                            <div><strong class="text-white">mDNS Discovery</strong><br /><span
+                                    class="text-sm text-slate-400">Auto-discovery via Zeroconf (_aviator._tcp
+                                    service).</span>
+                            </div>
                         </li>
                     </ul>
                 </div>
             </div>
 
+            <h2><i class="fas fa-bridge text-purple-500"></i> Wails Bridge</h2>
+            <p>Wails creates a seamless connection between the Vue frontend and Go backend without HTTP overhead.</p>
+
+            <div class="card bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-purple-500/30 mt-6">
+                <h3 class="text-white !mt-0 mb-4">Key Features</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="text-cyan-400 font-semibold mb-2">Type-Safe Bindings</h4>
+                        <p class="text-sm text-slate-400 mb-0">Auto-generated TypeScript definitions for all Go methods.
+                            Full IDE autocomplete and type checking.</p>
+                    </div>
+                    <div>
+                        <h4 class="text-cyan-400 font-semibold mb-2">Native Dialogs</h4>
+                        <p class="text-sm text-slate-400 mb-0">Use system file/folder pickers directly from JavaScript.
+                            No web input hacks needed.</p>
+                    </div>
+                    <div>
+                        <h4 class="text-cyan-400 font-semibold mb-2">Event System</h4>
+                        <p class="text-sm text-slate-400 mb-0">Bi-directional event emitting. Backend can notify
+                            frontend of server status changes.</p>
+                    </div>
+                    <div>
+                        <h4 class="text-cyan-400 font-semibold mb-2">Single Binary</h4>
+                        <p class="text-sm text-slate-400 mb-0">Vue app is embedded in the .exe. No separate files to
+                            distribute or lose.</p>
+                    </div>
+                </div>
+            </div>
+
+            <h2><i class="fas fa-mobile-alt text-green-500"></i> Mobile Web Interface</h2>
+            <p>The embedded HTTP server serves a glassmorphism web app accessible from any device on the network.</p>
+
+            <div class="grid md:grid-cols-3 gap-6 mt-6">
+                <div class="card border-green-500/30">
+                    <h4 class="text-green-400 !mt-0 mb-2"><i class="fas fa-palette mr-2"></i>Pure CSS</h4>
+                    <p class="text-sm text-slate-400">No build step required. Glassmorphism effects using CSS
+                        backdrop-filter and modern gradients.</p>
+                </div>
+                <div class="card border-green-500/30">
+                    <h4 class="text-green-400 !mt-0 mb-2"><i class="fas fa-mobile-screen-button mr-2"></i>Responsive
+                    </h4>
+                    <p class="text-sm text-slate-400">Touch-optimized cards that work beautifully on iOS, Android,
+                        tablets, and desktop browsers.</p>
+                </div>
+                <div class="card border-green-500/30">
+                    <h4 class="text-green-400 !mt-0 mb-2"><i class="fas fa-bolt mr-2"></i>Fast</h4>
+                    <p class="text-sm text-slate-400">Vanilla JavaScript with smooth animations. No React bloat. Instant
+                        page loads.</p>
+                </div>
+            </div>
+
             <div class="mt-8 bg-slate-800 p-6 rounded-lg border-l-4 border-indigo-500">
-                <h3 class="text-white font-bold text-lg mb-2 !mt-0">Why this architecture?</h3>
-                <p class="text-sm mb-0">By serving the frontend directly from the Python backend, we eliminate the need
-                    for users to install Node.js or run a separate frontend server. This creates a true <strong>"Single
-                        Executable"</strong> experience perfect for non-technical users.</p>
+                <h3 class="text-white font-bold text-lg mb-2 !mt-0">Why Wails?</h3>
+                <p class="text-sm mb-4">Wails combines the best of desktop and web development:</p>
+                <ul class="text-sm space-y-2 text-slate-300">
+                    <li>• <strong>Single Executable</strong> - No Python runtime, no Node.js dependencies. Just .exe
+                    </li>
+                    <li>• <strong>Native Performance</strong> - Go's speed with Vue's reactivity. < 12 MB memory
+                            footprint</li>
+                    <li>• <strong>Modern DX</strong> - Hot reload during development, TypeScript support, familiar Vue
+                        workflow</li>
+                    <li>• <strong>Cross-Platform</strong> - Same codebase builds for Windows, macOS, and Linux</li>
+                </ul>
             </div>
         </section>
     </main>
