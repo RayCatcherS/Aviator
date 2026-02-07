@@ -1,0 +1,44 @@
+[
+    {
+        "id": "69360474-3456-4746-b641-44968a2715b5",
+        "name": "steam",
+        "path": "C:/Program Files (x86)/Steam/steam.exe",
+        "args": "-bigpicture"
+    },
+    {
+        "id": "2d6fe429-f7f7-42eb-ac69-fabfb8ae4ba1",
+        "name": "Docker Desktop",
+        "path": "C:/Program Files/Docker/Docker/Docker Desktop.exe",
+        "args": ""
+    },
+    {
+        "id": "eb6d400e-1e9b-44ac-b6ad-7a9385184d37",
+        "name": "Update",
+        "path": "C:/Users/Nitro/AppData/Local/Discord/Update.exe",
+        "args": ""
+    },
+    {
+        "id": "04fb6d37-3633-4c3a-a81c-88abc1db2d4a",
+        "name": "Antigravity",
+        "path": "C:/Users/Nitro/AppData/Local/Programs/Antigravity/Antigravity.exe",
+        "args": ""
+    },
+    {
+        "id": "531a9cdd-7a00-44ee-9ea6-133d3048e59f",
+        "name": "MySQLWorkbench",
+        "path": "C:/Program Files/MySQL/MySQL Workbench 8.0/MySQLWorkbench.exe",
+        "args": ""
+    },
+    {
+        "id": "11fbe8c1-2ad7-45b3-b936-e5d3377cdf65",
+        "name": "NordVPN",
+        "path": "C:/Program Files/NordVPN/NordVPN.exe",
+        "args": ""
+    },
+    {
+        "id": "df7c9990-3887-466b-9ad5-0e3dffba23f7",
+        "name": "Unity Hub",
+        "path": "C:/Program Files/Unity Hub/Unity Hub.exe",
+        "args": ""
+    }
+]

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebApp Aviator - Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="style.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body class="min-h-screen flex">
+
+    <!-- Sidebar -->
+    <aside class="w-64 fixed h-full overflow-y-auto z-20">
+        <div class="p-6 mb-4 text-center">
+            <a href="index.html" class="block hover:opacity-80 transition-opacity">
+                <h2
+                    class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 tracking-widest uppercase mb-1">
+                    Aviator</h2>
+                <p class="text-xs text-slate-500 font-mono">DOCS v1.0</p>
+            </a>
+        </div>
+        <nav class="px-4 space-y-1">
+            <a href="index.html" class="sidebar-link active">Overview</a>
+            <a href="user_guide.html" class="sidebar-link">User Guide</a>
+            <a href="architecture.html" class="sidebar-link">Architecture</a>
+            <a href="technical.html" class="sidebar-link">Technical API</a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="ml-64 p-12 w-full">
+        <header class="mb-12">
+            <h1>Introduction</h1>
+        </header>
+
+        <section>
+            <p class="text-xl font-light mb-8 opacity-80">
+                WebApp Aviator is a premium local network solution designed to bridge the gap between your mobile
+                devices and your Windows desktop applications.
+            </p>
+
+            <div class="grid grid-cols-2 gap-6 mb-12">
+                <div class="card">
+                    <h3 class="!mt-0 mb-3 text-white"><i class="fas fa-rocket text-cyan-400 mr-2"></i> Launch Remotely
+                    </h3>
+                    <p class="text-sm !mb-0">Trigger games, efficiency tools, or scripts on your PC directly from your
+                        phone's browser.</p>
+                </div>
+                <div class="card">
+                    <h3 class="!mt-0 mb-3 text-white"><i class="fas fa-satellite-dish text-cyan-400 mr-2"></i> Zero
+                        Config</h3>
+                    <p class="text-sm !mb-0">Automatic discovery via mDNS/Zeroconf. No IP typing required (just scan the
+                        QR code).</p>
+                </div>
+                <div class="card">
+                    <h3 class="!mt-0 mb-3 text-white"><i class="fas fa-swatchbook text-cyan-400 mr-2"></i> Premium UI
+                    </h3>
+                    <p class="text-sm !mb-0">Glassmorphism design that looks native on iOS and Android devices.</p>
+                </div>
+                <div class="card">
+                    <h3 class="!mt-0 mb-3 text-white"><i class="fas fa-terminal text-cyan-400 mr-2"></i> Custom
+                        Arguments</h3>
+                    <p class="text-sm !mb-0">Launch apps with specific flags (e.g. <code>-bigpicture</code>,
+                        <code>--incognito</code>).</p>
+                </div>
+            </div>
+
+            <div class="card border-l-4 border-l-cyan-500">
+                <h2 class="!mt-0 !mb-6 !border-0 text-cyan-300">Quick Start</h2>
+                <div class="space-y-4">
+                    <div class="flex gap-4 items-center">
+                        <span
+                            class="bg-slate-900 w-8 h-8 flex items-center justify-center rounded-full text-cyan-500 font-bold border border-cyan-500/30">1</span>
+                        <p class="!mb-0">Navigate to the project root.</p>
+                    </div>
+                    <div class="flex gap-4 items-center">
+                        <span
+                            class="bg-slate-900 w-8 h-8 flex items-center justify-center rounded-full text-cyan-500 font-bold border border-cyan-500/30">2</span>
+                        <p class="!mb-0">Double click the <code>start_aviator.bat</code> script.</p>
+                    </div>
+                    <div class="flex gap-4 items-center">
+                        <span
+                            class="bg-slate-900 w-8 h-8 flex items-center justify-center rounded-full text-cyan-500 font-bold border border-cyan-500/30">3</span>
+                        <p class="!mb-0">Add your favorite applications using the Desktop GUI.</p>
+                    </div>
+                    <div class="flex gap-4 items-center">
+                        <span
+                            class="bg-slate-900 w-8 h-8 flex items-center justify-center rounded-full text-cyan-500 font-bold border border-cyan-500/30">4</span>
+                        <p class="!mb-0">Scan the QR code with your phone!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>
