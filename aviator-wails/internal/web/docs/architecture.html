@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architecture - Aviator | Wails Docs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="style.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'dark', themeVariables: { fontFamily: 'Segoe UI', fontSize: '16px' } });
+    </script>
+</head>
+
+<body class="min-h-screen flex">
+
+    <!-- Sidebar -->
+    <aside class="w-64 fixed h-full overflow-y-auto z-20">
+        <div class="p-6 mb-4 text-center">
+            <a href="index.html" class="block hover:opacity-80 transition-opacity">
+                <h2
+                    class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 tracking-widest uppercase mb-1">
+                    Aviator</h2>
+                <p class="text-xs text-slate-500 font-mono">DOCS v2.0 | Wails</p>
+            </a>
+        </div>
+        <nav class="px-4 space-y-1">
+            <a href="index.html" class="sidebar-link">Overview</a>
+            <a href="user_guide.html" class="sidebar-link">User Guide</a>
+            <a href="architecture.html" class="sidebar-link active">Architecture</a>
+            <a href="technical.html" class="sidebar-link">Technical API</a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="ml-64 p-12 w-full">
+        <header class="mb-12 text-center border-b border-slate-800 pb-10">
+            <div class="inline-block p-3 rounded-full bg-purple-500/10 mb-4">
+                <i class="fas fa-layer-group text-4xl text-purple-400"></i>
+            </div>
+            <h1>System Architecture</h1>
+            <p class="text-xl text-slate-400 max-w-2xl mx-auto">Modern desktop application built with Wails, combining
+                Go backend performance with Vue 3 glassmorphism frontend.</p>
+        </header>
+
+        <section>
+            <h2><i class="fas fa-project-diagram text-cyan-500"></i> Data Flow</h2>
+            <p>Aviator operates as a hybrid desktop/web application with strictly local network communication.</p>
+
+            <div class="bg-slate-950 p-8 rounded-xl border border-slate-800 my-8 shadow-inner overflow-x-auto">
+                <pre class="mermaid">
+    graph TB
+        subgraph Desktop["Desktop App (Wails)"]
+            Frontend["Vue 3 Frontend<br/>Glassmorphism UI"]
+            Bridge["Wails Bridge<br/>JS ⟷ Go"]
+            Backend["Go Backend"]
+        end
+        
+        subgraph Mobile["Mobile Device"]
+            Browser["Web Browser"]
+        end
+        
+        subgraph Services["Backend Services"]
+            Config["Config Manager<br/>JSON Storage"]
+            Server["HTTP Server<br/>Port 8000"]
+            Launcher["Process Launcher<br/>Detached Exec"]
+            Discovery["mDNS Discovery<br/>Network Announce"]
+        end
+        
+        Frontend -->|Function Calls| Bridge
+        Bridge -->|Invoke| Backend
+        Backend --> Config
+        Backend --> Server
+        Backend --> Launcher
+        Backend --> Discovery
+        
+        Browser -->|HTTP Request| Server
+        Server -->|Launch Command| Launcher
+        Launcher -->|CreateProcess| Windows["Windows OS"]
+        
+        Discovery -.->|Broadcast| Browser
+                </pre>
+            </div>
+
+            <h2><i class="fas fa-cubes text-yellow-500"></i> Core Components</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+
+                <!-- Frontend Card -->
+                <div class="card group">
+                    <div class="flex items-center gap-4 mb-4 border-b border-slate-700 pb-4">
+                        <div class="bg-green-500/10 p-2 rounded text-green-500"><i class="fab fa-vuejs text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-white !mt-0 !mb-0">Frontend (Vue 3)</h3>
+                            <span class="text-xs text-slate-500 uppercase tracking-widest">User Interface</span>
+                        </div>
+                    </div>
+                    <ul class="space-y-3">
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-palette text-green-500 mt-1"></i>
+                            <div><strong class="text-white">Glassmorphism Design</strong><br /><span
+                                    class="text-sm text-slate-400">Blur effects, vibrant gradients, smooth animations
+                                    with CSS3.</span></div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-qrcode text-green-500 mt-1"></i>
+                            <div><strong class="text-white">QR Code Generation</strong><br /><span
+                                    class="text-sm text-slate-400">Dynamic QR codes using qr code.js library for instant
+                                    mobile access.</span></div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-bolt text-green-500 mt-1"></i>
+                            <div><strong class="text-white">Reactive Components</strong><br /><span
+                                    class="text-sm text-slate-400">Vue 3 Composition API with auto-generated TypeScript
+                                    bindings.</span></div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Backend Card -->
+                <div class="card group">
+                    <div class="flex items-center gap-4 mb-4 border-b border-slate-700 pb-4">
+                        <div class="bg-cyan-500/10 p-2 rounded text-cyan-500"><i class="fas fa-code text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-white !mt-0 !mb-0">Backend (Go)</h3>
+                            <span class="text-xs text-slate-500 uppercase tracking-widest">Business Logic</span>
+                        </div>
+                    </div>
+                    <ul class="space-y-3">
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-cogs text-cyan-500 mt-1"></i>
+                            <div><strong class="text-white">Config Manager</strong><br /><span
+                                    class="text-sm text-slate-400">JSON-based persistence in %LOCALAPPDATA% with UUID
+                                    generation.</span></div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-server text-cyan-500 mt-1"></i>
+                            <div><strong class="text-white">HTTP Server</strong><br /><span
+                                    class="text-sm text-slate-400">RESTful API + static file serving on port
+                                    8000.</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-rocket text-cyan-500 mt-1"></i>
+                            <div><strong class="text-white">Process Launcher</strong><br /><span
+                                    class="text-sm text-slate-400">Detached process execution with custom arguments
+                                    support.</span></div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-broadcast-tower text-cyan-500 mt-1"></i>
+                            <div><strong class="text-white">mDNS Discovery</strong><br /><span
+                                    class="text-sm text-slate-400">Zeroconf service announcement for zero-config mobile
+                                    access.</span></div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2 class="mt-12"><i class="fas fa-bridge text-purple-500"></i> Wails Bridge Layer</h2>
+
+            <div class="card border-l-4 border-l-purple-500">
+                <h3 class="!mt-0 text-purple-300">Go ⟷ JavaScript Communication</h3>
+                <p class="mb-4">Wails provides a seamless bridge between Go and JavaScript through automatic binding
+                    generation.</p>
+
+                <div class="grid grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="text-white font-bold mb-2">Go Methods (Backend)</h4>
+                        <pre class="bg-slate-900 p-3 rounded text-xs"><code>func (a *App) GetApps() []App
+func (a *App) AddApp(name, path, args)
+func (a *App) RemoveApp(id string)
+func (a *App) GetServerInfo() map
+func (a *App) SelectFile() string</code></pre>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-bold mb-2">JavaScript Imports (Frontend)</h4>
+                        <pre class="bg-slate-900 p-3 rounded text-xs"><code>import {
+  GetApps,
+  AddApp,
+  RemoveApp,
+  GetServerInfo,
+  SelectFile
+} from './wailsjs/go/main/App'</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="mt-12"><i class="fas fa-database text-blue-500"></i> Data Storage</h2>
+
+            <div class="grid grid-cols-2 gap-6">
+                <div class="card">
+                    <h3 class="!mt-0 text-white"><i class="fas fa-file-code text-blue-400 mr-2"></i>Configuration</h3>
+                    <p class="text-sm mb-2">Path: <code>%LOCALAPPDATA%\Aviator\config.json</code></p>
+                    <pre class="bg-slate-900 p-3 rounded text-xs overflow-x-auto"><code>[
+  {
+    "id": "uuid-v4",
+    "name": "Steam",
+    "path": "C:\\Steam\\steam.exe",
+    "args": "-bigpicture"
+  }
+]</code></pre>
+                </div>
+                <div class="card">
+                    <h3 class="!mt-0 text-white"><i class="fas fa-memory text-green-400 mr-2"></i>Runtime State</h3>
+                    <p class="text-sm">All application state is managed in-memory by Go structs with automatic
+                        persistence on changes.</p>
+                    <ul class="text-xs space-y-1 mt-3">
+                        <li><i class="fas fa-check text-green-400 mr-1"></i>Apps list</li>
+                        <li><i class="fas fa-check text-green-400 mr-1"></i>Server status</li>
+                        <li><i class="fas fa-check text-green-400 mr-1"></i>Network info</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-8 bg-slate-800 p-6 rounded-lg border-l-4 border-indigo-500">
+                <h3 class="text-white font-bold text-lg mb-2 !mt-0">Why Wails?</h3>
+                <p class="text-sm mb-0">Wails combines the <strong>performance of Go</strong> with the
+                    <strong>flexibility of modern web technologies</strong>.
+                    Unlike Electron, Wails uses the system's native WebView (WebView2 on Windows), resulting in a
+                    <strong>tiny executable (~12 MB)</strong>
+                    with blazing-fast startup times and minimal memory footprint.</p>
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>

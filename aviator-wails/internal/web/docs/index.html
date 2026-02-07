@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aviator | Wails - Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="style.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body class="min-h-screen flex">
+
+    <!-- Sidebar -->
+    <aside class="w-64 fixed h-full overflow-y-auto z-20">
+        <div class="p-6 mb-4 text-center">
+            <a href="index.html" class="block hover:opacity-80 transition-opacity">
+                <h2
+                    class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 tracking-widest uppercase mb-1">
+                    Aviator</h2>
+                <p class="text-xs text-slate-500 font-mono">DOCS v2.0 | Wails</p>
+            </a>
+        </div>
+        <nav class="px-4 space-y-1">
+            <a href="index.html" class="sidebar-link active">Overview</a>
+            <a href="user_guide.html" class="sidebar-link">User Guide</a>
+            <a href="architecture.html" class="sidebar-link">Architecture</a>
+            <a href="technical.html" class="sidebar-link">Technical API</a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="ml-64 p-12 w-full">
+        <header class="mb-12">
+            <h1>Introduction</h1>
+            <p class="text-lg text-slate-400 mt-2">Aviator v2.0 - Built with Wails</p>
+        </header>
+
+        <section>
+            <p class="text-xl font-light mb-8 opacity-80">
+                Aviator is a modern desktop application launcher with glassmorphism UI, built using Wails framework. 
+                Launch your Windows applications remotely from any device on your local network with a beautiful, native interface.
+            </p>
+
+            <div class="grid grid-cols-2 gap-6 mb-12">
+                <div class="card">
+                    <h3 class="!mt-0 mb-3 text-white"><i class="fas fa-rocket text-cyan-400 mr-2"></i> Launch Remotely
+                    </h3>
+                    <p class="text-sm !mb-0">Trigger games, productivity tools, or scripts on your PC directly from your
+                        phone's browser or native desktop interface.</p>
+                </div>
+                <div class="card">
+                    <h3 class="!mt-0 mb-3 text-white"><i class="fas fa-satellite-dish text-cyan-400 mr-2"></i> Zero
+                        Config</h3>
+                    <p class="text-sm !mb-0">Automatic discovery via mDNS/Zeroconf. No IP typing required - just scan the
+                        QR code and launch!</p>
+                </div>
+                <div class="card">
+                    <h3 class="!mt-0 mb-3 text-white"><i class="fas fa-swatchbook text-cyan-400 mr-2"></i> Glassmorphism UI
+                    </h3>
+                    <p class="text-sm !mb-0">Modern, premium interface with blur effects, smooth animations, and vibrant gradients that look amazing on any device.</p>
+                </div>
+                <div class="card">
+                    <h3 class="!mt-0 mb-3 text-white"><i class="fas fa-terminal text-cyan-400 mr-2"></i> Custom
+                        Arguments</h3>
+                    <p class="text-sm !mb-0">Launch apps with specific flags (e.g. <code>-bigpicture</code>,
+                        <code>--incognito</code>) for tailored execution.</p>
+                </div>
+                <div class="card">
+                    <h3 class="!mt-0 mb-3 text-white"><i class="fas fa-desktop text-cyan-400 mr-2"></i> Native Performance
+                    </h3>
+                    <p class="text-sm !mb-0">Built with Wails v2 and Go - native performance with small footprint (~12 MB executable).</p>
+                </div>
+                <div class="card">
+                    <h3 class="!mt-0 mb-3 text-white"><i class="fas fa-globe text-cyan-400 mr-2"></i> Cross-Platform Ready
+                    </h3>
+                    <p class="text-sm !mb-0">Wails framework enables future macOS and Linux builds from the same codebase.</p>
+                </div>
+            </div>
+
+            <div class="card border-l-4 border-l-cyan-500 mb-8">
+                <h2 class="!mt-0 !mb-6 !border-0 text-cyan-300">What's New in v2.0</h2>
+                <div class="space-y-3">
+                    <div class="flex gap-3 items-start">
+                        <i class="fas fa-check-circle text-green-400 mt-1"></i>
+                        <div>
+                            <strong class="text-white">Wails Framework</strong>: Migrated from lxn/walk to Wails for better cross-platform support
+                        </div>
+                    </div>
+                    <div class="flex gap-3 items-start">
+                        <i class="fas fa-check-circle text-green-400 mt-1"></i>
+                        <div>
+                            <strong class="text-white">Glassmorphism UI</strong>: Complete redesign with modern glass effects and animations
+                        </div>
+                    </div>
+                    <div class="flex gap-3 items-start">
+                        <i class="fas fa-check-circle text-green-400 mt-1"></i>
+                        <div>
+                            <strong class="text-white">Vue 3 Frontend</strong>: Modern reactive components with smooth transitions
+                        </div>
+                    </div>
+                    <div class="flex gap-3 items-start">
+                        <i class="fas fa-check-circle text-green-400 mt-1"></i>
+                        <div>
+                            <strong class="text-white">Improved Developer Experience</strong>: Live reload, browser debugging, TypeScript bindings
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-l-4 border-l-cyan-500">
+                <h2 class="!mt-0 !mb-6 !border-0 text-cyan-300">Quick Start</h2>
+                <div class="space-y-4">
+                    <div class="flex gap-4 items-center">
+                        <span
+                            class="bg-slate-900 w-8 h-8 flex items-center justify-center rounded-full text-cyan-500 font-bold border border-cyan-500/30">1</span>
+                        <p class="!mb-0">Download <code>aviator-wails.exe</code> from the releases page.</p>
+                    </div>
+                    <div class="flex gap-4 items-center">
+                        <span
+                            class="bg-slate-900 w-8 h-8 flex items-center justify-center rounded-full text-cyan-500 font-bold border border-cyan-500/30">2</span>
+                        <p class="!mb-0">Double-click to run the application.</p>
+                    </div>
+                    <div class="flex gap-4 items-center">
+                        <span
+                            class="bg-slate-900 w-8 h-8 flex items-center justify-center rounded-full text-cyan-500 font-bold border border-cyan-500/30">3</span>
+                        <p class="!mb-0">Click "Add App" in the desktop interface to configure your applications.</p>
+                    </div>
+                    <div class="flex gap-4 items-center">
+                        <span
+                            class="bg-slate-900 w-8 h-8 flex items-center justify-center rounded-full text-cyan-500 font-bold border border-cyan-500/30">4</span>
+                        <p class="!mb-0">Scan the QR code with your phone to access the web interface!</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 p-6 bg-gradient-to-r from-blue-900/20 to-cyan-900/20 rounded-lg border border-blue-500/30">
+                <h3 class="text-white !mt-0 mb-3"><i class="fas fa-info-circle text-blue-400 mr-2"></i>System Requirements</h3>
+                <ul class="space-y-2 text-sm">
+                    <li><i class="fas fa-check text-green-400 mr-2"></i>Windows 10/11 (WebView2 included)</li>
+                    <li><i class="fas fa-check text-green-400 mr-2"></i>~12 MB disk space</li>
+                    <li><i class="fas fa-check text-green-400 mr-2"></i>Local network connection (for mobile access)</li>
+                    <li><i class="fas fa-check text-green-400 mr-2"></i>Optional: For development - Go 1.23+, Node.js 18+</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>

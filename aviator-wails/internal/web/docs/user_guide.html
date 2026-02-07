@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Guide - Aviator | Wails Docs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="style.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .step-num {
+            @apply absolute -right-4 -top-4 text-8xl font-bold text-slate-700/20 select-none;
+        }
+
+        .kbd {
+            @apply bg-slate-700 px-1.5 py-0.5 rounded border border-slate-600 text-xs font-mono text-white shadow-sm;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex">
+
+    <!-- Sidebar -->
+    <aside class="w-64 fixed h-full overflow-y-auto z-20">
+        <div class="p-6 mb-4 text-center">
+            <a href="index.html" class="block hover:opacity-80 transition-opacity">
+                <h2
+                    class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 tracking-widest uppercase mb-1">
+                    Aviator</h2>
+                <p class="text-xs text-slate-500 font-mono">DOCS v2.0 | Wails</p>
+            </a>
+        </div>
+        <nav class="px-4 space-y-1">
+            <a href="index.html" class="sidebar-link">Overview</a>
+            <a href="user_guide.html" class="sidebar-link active">User Guide</a>
+            <a href="architecture.html" class="sidebar-link">Architecture</a>
+            <a href="technical.html" class="sidebar-link">Technical API</a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="ml-64 p-12 w-full">
+        <header class="mb-12 text-center border-b border-slate-800 pb-10">
+            <div class="inline-block p-3 rounded-full bg-cyan-500/10 mb-4">
+                <i class="fas fa-book-reader text-4xl text-cyan-400"></i>
+            </div>
+            <h1>User Guide</h1>
+            <p class="text-xl text-slate-400 max-w-2xl mx-auto">Master your application launcher. Configure, connect,
+                and control your PC remotely with glassmorphism UI.</p>
+        </header>
+
+        <section>
+            <h2><i class="fas fa-play-circle text-green-500"></i> Getting Started</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                <!-- Step 1 -->
+                <div class="card relative overflow-hidden group">
+                    <span class="step-num">1</span>
+                    <h3 class="!mt-0"><i class="fas fa-download mr-2"></i> Launch Application</h3>
+                    <p>Double-click <span class="kbd">aviator-wails.exe</span> to start the desktop application.</p>
+                    <p class="text-sm text-slate-400 mt-4 bg-slate-900/50 p-3 rounded border border-slate-800">
+                        <i class="fas fa-info-circle text-cyan-400 mr-2"></i>
+                        The glassmorphism interface will appear automatically!
+                    </p>
+                </div>
+
+                <!-- Step 2  -->
+                <div class="card relative overflow-hidden group">
+                    <span class="step-num">2</span>
+                    <h3 class="!mt-0"><i class="fas fa-plus-square mr-2"></i> Add Applications</h3>
+                    <p>Click <span class="kbd">+ Add App</span> button, then use the native file picker to select any
+                        .exe file.</p>
+                    <p class="text-sm text-slate-400 mt-4 bg-slate-900/50 p-3 rounded border border-slate-800">
+                        <i class="fas fa-lightbulb text-yellow-400 mr-2"></i>
+                        App name auto-fills from filename!
+                    </p>
+                </div>
+            </div>
+
+            <h2><i class="fas fa-mobile-alt text-purple-500"></i> Mobile Access</h2>
+
+            <div
+                class="bg-gradient-to-r from-slate-800 to-slate-900 rounded-xl p-8 border border-slate-700 flex flex-col md:flex-row items-center gap-8 shadow-xl mb-12">
+                <div class="flex-1">
+                    <h3 class="!mt-0 text-white">Instant QR Connection</h3>
+                    <p>The fastest way to connect from your phone. Zero configuration required.</p>
+                    <ol class="list-decimal list-inside space-y-3 mt-4 text-slate-300">
+                        <li>Look at the <strong>Status Panel</strong> in the desktop app (top section).</li>
+                        <li>Open your phone's <strong>Camera app</strong>.</li>
+                        <li>Scan the <strong>QR Code</strong> displayed in the app.</li>
+                        <li>Tap the notification link to open the web interface.</li>
+                        <li>Launch apps from the beautiful mobile UI!</li>
+                    </ol>
+                </div>
+                <div class="w-full md:w-64 h-64 bg-white rounded-xl flex items-center justify-center shadow-inner">
+                    <!-- Placeholder visual for QR -->
+                    <div class="text-center text-slate-400">
+                        <i class="fas fa-qrcode text-6xl mb-2 opacity-50"></i>
+                        <p class="text-xs uppercase font-bold tracking-widest">Scan Me</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-lg flex items-start gap-3">
+                <i class="fas fa-exclamation-triangle text-yellow-500 mt-1"></i>
+                <div>
+                    <strong class="text-yellow-500 block text-sm uppercase tracking-wide">Network Requirement</strong>
+                    <p class="text-sm !mb-0 text-yellow-100/80">Your Phone and PC must be on the <strong
+                            class="text-white">Same Wi-Fi Network</strong> for mobile access.</p>
+                </div>
+            </div>
+
+            <h2 class="mt-12"><i class="fas fa-desktop text-blue-500"></i> Desktop Interface</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="card">
+                    <h3 class="!mt-0 text-white"><i class="fas fa-th-large text-cyan-400 mr-2"></i>Glassmorphism Grid
+                    </h3>
+                    <p class="text-sm">Applications are displayed as beautiful glass cards with blur effects. Hover over
+                        cards to see smooth animations!</p>
+                </div>
+                <div class="card">
+                    <h3 class="!mt-0 text-white"><i class="fas fa-chart-line text-green-400 mr-2"></i>Live Status</h3>
+                    <p class="text-sm">Real-time server status with animated badge, local & network URLs prominently
+                        displayed.</p>
+                </div>
+                <div class="card">
+                    <h3 class="!mt-0 text-white"><i class="fas fa-edit text-purple-400 mr-2"></i>Quick Edit</h3>
+                    <p class="text-sm">Edit button (✏️) on each card opens modal dialog for updating name, path, or
+                        arguments.</p>
+                </div>
+                <div class="card">
+                    <h3 class="!mt-0 text-white"><i class="fas fa-trash text-red-400 mr-2"></i>Easy Remove</h3>
+                    <p class="text-sm">Delete button (🗑️) with confirmation dialog ensures safe removal of
+                        applications.</p>
+                </div>
+            </div>
+
+            <h2><i class="fas fa-cogs text-blue-500"></i> Advanced Features</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="card">
+                    <i class="fas fa-terminal text-2xl text-pink-400 mb-3 block"></i>
+                    <h4 class="font-bold text-white mb-2">Launch Arguments</h4>
+                    <p class="text-sm">Add flags like <code>-windowed</code> or <code>--incognito</code> in the
+                        "Arguments" field when adding/editing apps.</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-folder text-2xl text-blue-400 mb-3 block"></i>
+                    <h4 class="font-bold text-white mb-2">Native File Picker</h4>
+                    <p class="text-sm">Click <span class="kbd">Browse</span> button to use Windows native file dialog
+                        for selecting executables.</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-database text-2xl text-green-400 mb-3 block"></i>
+                    <h4 class="font-bold text-white mb-2 ">Auto-Save</h4>
+                    <p class="text-sm">All changes are automatically saved to
+                        <code>%LOCALAPPDATA%\Aviator\config.json</code></p>
+                </div>
+            </div>
+
+            <div class="mt-12 card border-l-4 border-l-green-500">
+                <h3 class="!mt-0 text-green-300"><i class="fas fa-lightbulb mr-2"></i>Pro Tips</h3>
+                <ul class="space-y-2 text-sm">
+                    <li><i class="fas fa-check text-green-400 mr-2"></i>Pin the app to taskbar for quick access</li>
+                    <li><i class="fas fa-check text-green-400 mr-2"></i>Use the web interface on tablets for a bigger
+                        screen</li>
+                    <li><i class="fas fa-check text-green-400 mr-2"></i>Add Steam games with <code>-bigpicture</code>
+                        flag</li>
+                    <li><i class="fas fa-check text-green-400 mr-2"></i>Launch browsers with <code>--new-window</code>
+                        for clean sessions</li>
+                </ul>
+            </div>
+
+        </section>
+    </main>
+</body>
+
+</html>

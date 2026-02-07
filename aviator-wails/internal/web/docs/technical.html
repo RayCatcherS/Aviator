@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technical Reference - Aviator | Wails Docs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="style.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .endpoint-card {
+            @apply bg-slate-800 border border-slate-700 rounded-lg overflow-hidden mb-8 shadow-lg;
+        }
+
+        .endpoint-header {
+            @apply bg-slate-900/50 p-4 border-b border-slate-700 flex items-center gap-4;
+        }
+
+        .method {
+            @apply font-bold px-3 py-1 rounded text-white text-xs uppercase tracking-wide;
+        }
+
+        .get {
+            @apply bg-green-600;
+        }
+
+        .post {
+            @apply bg-blue-600;
+        }
+
+        .url {
+            @apply font-mono text-cyan-300;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex">
+
+    <!-- Sidebar -->
+    <aside class="w-64 fixed h-full overflow-y-auto z-20">
+        <div class="p-6 mb-4 text-center">
+            <a href="index.html" class="block hover:opacity-80 transition-opacity">
+                <h2
+                    class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 tracking-widest uppercase mb-1">
+                    Aviator</h2>
+                <p class="text-xs text-slate-500 font-mono">DOCS v2.0 | Wails</p>
+            </a>
+        </div>
+        <nav class="px-4 space-y-1">
+            <a href="index.html" class="sidebar-link">Overview</a>
+            <a href="user_guide.html" class="sidebar-link">User Guide</a>
+            <a href="architecture.html" class="sidebar-link">Architecture</a>
+            <a href="technical.html" class="sidebar-link active">Technical API</a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="ml-64 p-12 w-full">
+        <header class="mb-12 text-center border-b border-slate-800 pb-10">
+            <div class="inline-block p-3 rounded-full bg-blue-500/10 mb-4">
+                <i class="fas fa-code text-4xl text-blue-400"></i>
+            </div>
+            <h1>Technical Reference</h1>
+            <p class="text-xl text-slate-400 max-w-2xl mx-auto">Complete API documentation and code structure for
+                Aviator v2.0</p>
+        </header>
+
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-10">
+            <!-- Left Column: API -->
+            <div class="xl:col-span-2">
+                <section>
+                    <h2><i class="fas fa-network-wired text-green-500"></i> HTTP REST API</h2>
+                    <p class="text-sm text-slate-400 mb-6">The embedded HTTP server listens on <code>port 8000</code> by
+                        default. All responses are JSON.</p>
+
+                    <!-- Apps List -->
+                    <div class="endpoint-card">
+                        <div class="endpoint-header">
+                            <span class="method get">GET</span>
+                            <span class="url">/api/apps</span>
+                        </div>
+                        <div class="p-6">
+                            <p>Retrieves the registry of all configured applications.</p>
+                            <div class="mt-4">
+                                <span class="text-xs text-slate-500 uppercase font-bold">Response 200 OK</span>
+                                <pre class="!m-0 !mt-2 rounded-lg !text-xs"><code class="language-json">[
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "name": "Steam",
+    "path": "C:\\Program Files\\Steam\\steam.exe",
+    "args": "-bigpicture"
+  }
+]</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Launch -->
+                    <div class="endpoint-card">
+                        <div class="endpoint-header">
+                            <span class="method post">POST</span>
+                            <span class="url">/api/launch/{app_id}</span>
+                        </div>
+                        <div class="p-6">
+                            <p>Executes the application identified by UUID on the host machine.</p>
+                            <div class="grid grid-cols-2 gap-4 mt-4">
+                                <div class="bg-slate-900/50 p-3 rounded border border-slate-700/50">
+                                    <span class="text-green-500 font-bold block text-xs">200 OK</span>
+                                    <span class="text-xs text-slate-400">Launched successfully</span>
+                                </div>
+                                <div class="bg-slate-900/50 p-3 rounded border border-slate-700/50">
+                                    <span class="text-red-500 font-bold block text-xs">404 Not Found</span>
+                                    <span class="text-xs text-slate-400">Invalid ID or file missing</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Info -->
+                    <div class="endpoint-card">
+                        <div class="endpoint-header">
+                            <span class="method get">GET</span>
+                            <span class="url">/api/info</span>
+                        </div>
+                        <div class="p-6">
+                            <p>Returns server information including URLs and status.</p>
+                            <div class="mt-4">
+                                <span class="text-xs text-slate-500 uppercase font-bold">Response 200 OK</span>
+                                <pre class="!m-0 !mt-2 rounded-lg !text-xs"><code class="language-json">{
+  "localURL": "http://localhost:8000",
+  "networkURL": "http://192.168.1.100:8000",
+  "status": "running"
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h2 class="mt-12"><i class="fas fa-link text-purple-500"></i> Wails Bindings</h2>
+                    <p class="text-sm text-slate-400 mb-6">Go methods exposed to JavaScript frontend through Wails
+                        bridge.</p>
+
+                    <div class="space-y-6">
+                        <div class="card border-l-4 border-l-cyan-500">
+                            <h4 class="!mt-0 font-mono text-cyan-300">GetApps() []App</h4>
+                            <p class="text-sm">Returns array of configured applications from config manager.</p>
+                        </div>
+                        <div class="card border-l-4 border-l-green-500">
+                            <h4 class="!mt-0 font-mono text-green-300">AddApp(name, path, args) App</h4>
+                            <p class="text-sm">Creates new application entry with UUID, saves to config, returns created
+                                app.</p>
+                        </div>
+                        <div class="card border-l-4 border-l-yellow-500">
+                            <h4 class="!mt-0 font-mono text-yellow-300">UpdateApp(id, name, path, args) bool</h4>
+                            <p class="text-sm">Updates existing application by ID, returns success status.</p>
+                        </div>
+                        <div class="card border-l-4 border-l-red-500">
+                            <h4 class="!mt-0 font-mono text-red-300">RemoveApp(id)</h4>
+                            <p class="text-sm">Removes application from config by UUID.</p>
+                        </div>
+                        <div class="card border-l-4 border-l-purple-500">
+                            <h4 class="!mt-0 font-mono text-purple-300">SelectFile() string</h4>
+                            <p class="text-sm">Opens native Windows file dialog, returns selected .exe path.</p>
+                        </div>
+                        <div class="card border-l-4 border-l-blue-500">
+                            <h4 class="!mt-0 font-mono text-blue-300">GetServerInfo() map</h4>
+                            <p class="text-sm">Returns server status object with URLs and running state.</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Right Column: Code Structure -->
+            <div class="xl:col-span-1">
+                <section>
+                    <h2><i class="fas fa-sitemap text-yellow-500"></i> Project Structure</h2>
+
+                    <div class="space-y-6">
+                        <div>
+                            <h3 class="!mt-2 !text-base flex items-center gap-2 text-slate-200">
+                                <i class="fas fa-code text-cyan-500"></i> app.go
+                            </h3>
+                            <p class="text-xs text-slate-400"><strong>Role:</strong> Wails Bindings Layer</p>
+                            <div class="bg-slate-800 p-3 rounded text-xs border border-slate-700 mt-2">
+                                <ul class="list-disc list-inside space-y-1 text-slate-300">
+                                    <li>Exposes Go methods to JavaScript</li>
+                                    <li>Manages app lifecycle (startup/shutdown)</li>
+                                    <li>Handles native dialogs</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="!mt-6 !text-base flex items-center gap-2 text-slate-200">
+                                <i class="fas fa-play text-green-500"></i> main.go
+                            </h3>
+                            <p class="text-xs text-slate-400"><strong>Role:</strong> Entry Point & Orchestration</p>
+                            <div class="bg-slate-800 p-3 rounded text-xs border border-slate-700 mt-2">
+                                <ul class="list-disc list-inside space-y-1 text-slate-300">
+                                    <li>Initializes all backend services</li>
+                                    <li>Starts HTTP server in goroutine</li>
+                                    <li>Configures Wails runtime</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="!mt-6 !text-base flex items-center gap-2 text-slate-200">
+                                <i class="fas fa-cog text-blue-500"></i> internal/config
+                            </h3>
+                            <p class="text-xs text-slate-400"><strong>Role:</strong> Configuration Management</p>
+                            <div class="bg-slate-800 p-3 rounded text-xs border border-slate-700 mt-2">
+                                <p>JSON persistence in <code>%LOCALAPPDATA%\Aviator\</code> with UUID generation.</p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="!mt-6 !text-base flex items-center gap-2 text-slate-200">
+                                <i class="fas fa-server text-yellow-500"></i> internal/server
+                            </h3>
+                            <p class="text-xs text-slate-400"><strong>Role:</strong> HTTP Server & API</p>
+                            <div class="bg-slate-800 p-3 rounded text-xs border border-slate-700 mt-2">
+                                <p>Serves REST API and static files on port 8000.</p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="!mt-6 !text-base flex items-center gap-2 text-slate-200">
+                                <i class="fas fa-rocket text-red-500"></i> internal/launcher
+                            </h3>
+                            <p class="text-xs text-slate-400"><strong>Role:</strong> Process Execution</p>
+                            <div class="bg-slate-800 p-3 rounded text-xs border border-slate-700 mt-2">
+                                <code
+                                    class="block bg-slate-900 p-2 rounded text-blue-300">exec.Command(path, args...)</code>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="!mt-6 !text-base flex items-center gap-2 text-slate-200">
+                                <i class="fas fa-broadcast-tower text-purple-500"></i> internal/discovery
+                            </h3>
+                            <p class="text-xs text-slate-400"><strong>Role:</strong> mDNS Service</p>
+                            <div class="bg-slate-800 p-3 rounded text-xs border border-slate-700 mt-2">
+                                <p>Broadcasts service for network auto-discovery.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+</body>
+
+</html>
