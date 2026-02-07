@@ -58,7 +58,7 @@ Aviator operates on a strictly local loop. No data leaves your network.
 -   `windows-server/api.py`: FastAPI application defining REST endpoints (`/api/apps`, `/api/launch/{id}`).
 -   `windows-server/launcher.py`: Handles subprocess execution with `subprocess.Popen`.
 -   `windows-server/discovery.py`: Manages mDNS broadcasting.
--   `windows-server/config_manager.py`: Persists app list to `config.json`.
+-   `windows-server/config_manager.py`: Persists app list to `%LOCALAPPDATA%/Aviator/config.json`.
 
 ### Development
 To run from source without the batch script:

@@ -3,13 +3,31 @@ import os
 from typing import List, Dict, Optional, Callable
 import uuid
 
-CONFIG_FILE = "config.json"
+CONFIG_DIR = os.path.join(os.getenv('LOCALAPPDATA'), 'Aviator')
+CONFIG_FILE = os.path.join(CONFIG_DIR, "config.json")
 
 class ConfigManager:
     def __init__(self):
         self.apps = []
         self.listeners: List[Callable] = []
+        self._ensure_config_dir()
         self.load()
+
+    def _ensure_config_dir(self):
+        if not os.path.exists(CONFIG_DIR):
+            os.makedirs(CONFIG_DIR)
+        
+        # Migration logic: if new config doesn't exist but old one does, copy it
+        # Old config is expected to be in the same directory as this script
+        old_config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json")
+        
+        if not os.path.exists(CONFIG_FILE) and os.path.exists(old_config_path):
+            try:
+                import shutil
+                shutil.copy(old_config_path, CONFIG_FILE)
+                print(f"Migrated config to {CONFIG_FILE}")
+            except Exception as e:
+                print(f"Error migrating config: {e}")
 
     def add_listener(self, callback: Callable):
         self.listeners.append(callback)
