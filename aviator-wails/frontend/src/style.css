@@ -4,22 +4,22 @@
   --glass-bg-hover: rgba(255, 255, 255, 0.15);
   --glass-border: rgba(255, 255, 255, 0.18);
   --glass-shadow: rgba(31, 38, 135, 0.37);
-  
+
   /* Vibrant gradients */
   --gradient-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   --gradient-accent: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
   --gradient-success: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-  
+
   /* Typography */
   --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  
+
   /* Spacing */
   --spacing-xs: 4px;
   --spacing-sm: 8px;
   --spacing-md: 16px;
   --spacing-lg: 24px;
   --spacing-xl: 32px;
-  
+
   /* Border radius */
   --radius-sm: 8px;
   --radius-md: 12px;
@@ -152,6 +152,9 @@ body {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  width: fit-content;
+  min-width: 100px;
+  justify-content: center;
 }
 
 .status-badge.running {
@@ -172,9 +175,12 @@ body {
 }
 
 @keyframes pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.5;
   }
@@ -186,6 +192,7 @@ body {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
