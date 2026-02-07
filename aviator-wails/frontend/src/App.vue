@@ -78,18 +78,9 @@
           <div style="font-size: 12px; opacity: 0.8; margin-bottom: 8px; word-break: break-all;">
             {{ app.path }}
           </div>
-          <div v-if="app.args" style="font-size: 11px; opacity: 0.6; margin-bottom: 12px;">
+          <div v-if="app.args" style="font-size: 11px; opacity: 0.6;">
             Args: {{ app.args }}
           </div>
-          <button 
-            @click="launchApp(app.id)" 
-            class="glass-button success" 
-            style="width: 100%;"
-            :disabled="!serverInfo.running"
-            :class="{ 'opacity-50 cursor-not-allowed': !serverInfo.running }"
-          >
-            🚀 Launch
-          </button>
         </div>
 
         <!-- Empty state -->
