@@ -33,7 +33,7 @@
     <div class="flex-1 flex flex-col p-6 gap-6 overflow-hidden z-10 relative">
       
       <!-- Status Header Panel -->
-      <div class="glass-card p-6 flex-shrink-0">
+      <div v-tilt class="glass-card p-6 flex-shrink-0">
         <div class="flex flex-row justify-between items-center gap-6">
           <div class="flex flex-col gap-3 flex-1 min-w-0">
             <div class="flex items-center gap-4">
@@ -91,7 +91,7 @@
       </div>
 
       <!-- Applications Section -->
-      <div class="glass-card flex-1 flex flex-col overflow-hidden min-h-0">
+      <div v-tilt class="glass-card flex-1 flex flex-col overflow-hidden min-h-0">
         <div class="p-6 pb-4 flex justify-between items-center border-b border-white/5">
           <h2 class="text-xl font-semibold text-slate-200">Applications</h2>
           <button @click="openAddDialog" class="glass-button primary flex items-center gap-2 text-sm">
@@ -101,8 +101,8 @@
 
         <!-- Apps Grid -->
         <div class="flex-1 overflow-y-auto p-6 app-grid-container custom-scrollbar">
-          <div v-if="apps.length > 0" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-            <div v-for="app in apps" :key="app.id" class="glass-card p-4 hover:border-white/20 transition-all group">
+          <div v-if="apps.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div v-for="app in apps" :key="app.id" class="glass-card glass-interactive p-4 hover:border-white/20 transition-all group">
               <div class="flex gap-4 items-start">
                 <!-- App Icon -->
                 <div v-if="app.icon" class="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 bg-black/20 p-2">
@@ -374,6 +374,48 @@ function toggleMaximize() {
 function closeWindow() {
   Quit();
 }
+
+// 3D Tilt Effect Directive
+const vTilt = {
+  mounted(el) {
+    el.style.transition = 'transform 0.1s ease-out';
+    el.style.willChange = 'transform';
+    el.style.transformStyle = 'preserve-3d';
+    
+    // Configurazione Effetto 3D (Tilt)
+    // Modifica 'maxTilt' per cambiare l'intensità della rotazione
+    const maxTilt = 3.0; // Gradi di rotazione massima (es. 1.5 leggero, 5.0 forte)
+    const perspective = 1000; // Prospettiva (più basso = più deformato)
+    
+    const handleMove = (e) => {
+      const rect = el.getBoundingClientRect();
+      const width = rect.width;
+      const height = rect.height;
+      
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+      
+      const xPct = mouseX / width - 0.5;
+      const yPct = mouseY / height - 0.5;
+      
+      const xRot = yPct * maxTilt * -1; // Invert X for natural tilt
+      const yRot = xPct * maxTilt;
+      
+      el.style.transform = `perspective(${perspective}px) rotateX(${xRot}deg) rotateY(${yRot}deg) scale(1.005)`;
+    };
+    
+    const handleLeave = () => {
+      el.style.transition = 'transform 0.5s ease-out'; // Slower return
+      el.style.transform = `perspective(${perspective}px) rotateX(0) rotateY(0) scale(1)`;
+      setTimeout(() => {
+          el.style.transition = 'transform 0.1s ease-out'; // Reset for next move
+      }, 500);
+    };
+
+    el.addEventListener('mousemove', handleMove);
+    el.addEventListener('mouseleave', handleLeave);
+  }
+};
 </script>
 
 <style scoped>

@@ -16,7 +16,7 @@ body {
   overflow-x: hidden;
 }
 
-/* Glass Card Styles */
+/* Glass Card Styles - STATIC (No interaction effects by default) */
 .glass-card {
   background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(16px);
@@ -26,14 +26,19 @@ body {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.glass-card:hover {
+/* Interactive Glass Card - Adds Hover/Active effects */
+.glass-interactive {
+  cursor: pointer;
+}
+
+.glass-interactive:hover {
   background: rgba(255, 255, 255, 0.07);
   border-color: rgba(255, 255, 255, 0.2);
   transform: translateY(-5px) scale(1.02);
   box-shadow: 0 15px 40px -10px rgba(100, 200, 255, 0.15);
 }
 
-.glass-card:active {
+.glass-interactive:active {
   transform: translateY(-2px) scale(0.98);
 }
 
@@ -99,12 +104,32 @@ body {
     box-shadow: 0 0 12px rgba(16, 185, 129, 0.8), 0 0 6px rgba(16, 185, 129, 0.6);
   }
 }
-/* UI Components */
-.glass-panel { @apply glass-card p-6 rounded-2xl; }
-.glass-button { @apply px-4 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all font-medium text-slate-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed; }
-.glass-button.primary { @apply bg-cyan-500/20 border-cyan-500/40 text-cyan-200 hover:bg-cyan-500/30; }
-.glass-button.success { @apply bg-green-500/20 border-green-500/40 text-green-200 hover:bg-green-500/30; }
-.glass-input { @apply w-full px-4 py-2 rounded-lg bg-black/20 border border-white/10 focus:border-cyan-500/50 focus:outline-none transition-colors text-slate-200; }
-.dialog-overlay { @apply fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50; }
-.dialog { @apply glass-card p-8 rounded-2xl w-full max-w-md shadow-2xl; }
 
+/* UI Components */
+.glass-panel {
+  @apply glass-card p-6 rounded-2xl;
+}
+
+.glass-button {
+  @apply px-4 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all font-medium text-slate-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.glass-button.primary {
+  @apply bg-cyan-500/20 border-cyan-500/40 text-cyan-200 hover:bg-cyan-500/30;
+}
+
+.glass-button.success {
+  @apply bg-green-500/20 border-green-500/40 text-green-200 hover:bg-green-500/30;
+}
+
+.glass-input {
+  @apply w-full px-4 py-2 rounded-lg bg-black/20 border border-white/10 focus:border-cyan-500/50 focus:outline-none transition-colors text-slate-200;
+}
+
+.dialog-overlay {
+  @apply fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50;
+}
+
+.dialog {
+  @apply glass-card p-8 rounded-2xl w-full max-w-md shadow-2xl;
+}
