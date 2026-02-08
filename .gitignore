@@ -1,17 +1,20 @@
-# Wails Build & Binaries
+# Wails Build Outputs
 aviator-wails/build/bin/
-aviator-wails/build/windows/
-aviator-wails/build/darwin/
-aviator-wails/build/linux/
-
-# Note: Keeping icons/manifests is usually good, 
-# but ignoring the whole build folder as requested:
-aviator-wails/build/
-
-# Frontend
-aviator-wails/frontend/node_modules/
 aviator-wails/frontend/dist/
-.npm/
+aviator-wails/frontend/node_modules/
+.wails/
+
+# Binaries & Logs
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.log
+*.test
+
+# Dependencies
+node_modules/
 
 # IDE & OS
 .vscode/
@@ -19,13 +22,9 @@ aviator-wails/frontend/dist/
 .DS_Store
 Thumbs.db
 *.suo
-*.ntvs*
-*.njsproj
 *.sln
-*.sw?
+*.swp
 
-# Temporary files
-*.log
-.wails/
-frontend/node_modules/
-node_modules/
+# Configs - usually you want to keep templates but ignore local configs
+# aviator-wails/config.json
+# aviator-wails/settings.json
