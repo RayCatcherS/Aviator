@@ -8,7 +8,10 @@ import (
 	"aviator-wails/internal/web"
 	"embed"
 	"log"
+	"os"
+	"syscall"
 	"time"
+	"unsafe"
 
 	"github.com/energye/systray"
 	"github.com/wailsapp/wails/v2"
@@ -24,6 +27,36 @@ var assets embed.FS
 //go:embed build/windows/icon.ico
 var iconData []byte
 
+// Single Instance Lock (Windows)
+func ensureSingleInstance() {
+	const mutexName = "Global\\AviatorWailsMutex"
+
+	kernel32 := syscall.NewLazyDLL("kernel32.dll")
+	procCreateMutex := kernel32.NewProc("CreateMutexW")
+
+	namePtr, _ := syscall.UTF16PtrFromString(mutexName)
+
+	// CreateMutex(security, initialOwner, name)
+	ret, _, err := procCreateMutex.Call(0, 0, uintptr(unsafe.Pointer(namePtr)))
+
+	if ret == 0 {
+		return
+	}
+
+	if err == syscall.Errno(183) { // ERROR_ALREADY_EXISTS (183)
+		user32 := syscall.NewLazyDLL("user32.dll")
+		procMessageBox := user32.NewProc("MessageBoxW")
+
+		title, _ := syscall.UTF16PtrFromString("Aviator")
+		msg, _ := syscall.UTF16PtrFromString("Aviator is already running.\nCheck the System Tray.")
+
+		// MB_OK | MB_ICONWARNING | MB_SYSTEMMODAL (0x00 | 0x30 | 0x1000)
+		procMessageBox.Call(0, uintptr(unsafe.Pointer(msg)), uintptr(unsafe.Pointer(title)), 0x1030)
+
+		os.Exit(0)
+	}
+}
+
 // NewProcessMonitor initializes process monitor with all configured apps
 func NewProcessMonitor(cm *config.ConfigManager) *processmon.ProcessMonitor {
 	pm := processmon.NewProcessMonitor()
@@ -34,6 +67,9 @@ func NewProcessMonitor(cm *config.ConfigManager) *processmon.ProcessMonitor {
 }
 
 func main() {
+	// 0. Ensure Single Instance
+	ensureSingleInstance()
+
 	log.Println("Initializing Aviator (Wails)...")
 
 	// 1. Load Config
