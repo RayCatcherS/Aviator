@@ -1,3 +1,31 @@
-build/bin
-node_modules
-frontend/dist
+# Wails Build & Binaries
+aviator-wails/build/bin/
+aviator-wails/build/windows/
+aviator-wails/build/darwin/
+aviator-wails/build/linux/
+
+# Note: Keeping icons/manifests is usually good, 
+# but ignoring the whole build folder as requested:
+aviator-wails/build/
+
+# Frontend
+aviator-wails/frontend/node_modules/
+aviator-wails/frontend/dist/
+.npm/
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Temporary files
+*.log
+.wails/
+frontend/node_modules/
+node_modules/

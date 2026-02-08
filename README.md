@@ -234,7 +234,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ### **v2.2 - Organization & Customization**
 - [ ] **🏪 Microsoft Store Apps** - Support for launching UWP apps (Netflix, Spotify) via AUMID
 - [ ] **📂 Categories** - Group apps (e.g., "Games", "Work") with filters
-- [ ] **🖼️ Custom Icons** - Upload custom images/icons for applications
 - [ ] **🎨 Advanced Themes** - Multiple color schemes (Cyberpunk, Minimal, Matrix)
 
 ### **v2.3 - Advanced Features**
