@@ -38,9 +38,7 @@ body {
   box-shadow: 0 15px 40px -10px rgba(100, 200, 255, 0.15);
 }
 
-.glass-interactive:active {
-  transform: translateY(-2px) scale(0.98);
-}
+/* Removed active state to prevent shrink effect on click */
 
 /* Background Animations */
 @keyframes blob {
