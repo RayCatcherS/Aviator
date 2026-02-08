@@ -104,6 +104,24 @@
                         </div>
                     </div>
 
+                    <!-- Process Status -->
+                    <div class="endpoint-card">
+                        <div class="endpoint-header">
+                            <span class="method get">GET</span>
+                            <span class="url">/api/monitoring/status</span>
+                        </div>
+                        <div class="p-6">
+                            <p>Returns a dictionary mapping App IDs to their running status (boolean).</p>
+                            <div class="mt-4">
+                                <span class="text-xs text-slate-500 uppercase font-bold">Response 200 OK</span>
+                                <pre class="!m-0 !mt-2 rounded-lg !text-xs"><code class="language-json">{
+  "550e8400-e29b-41d4-a716-446655440000": true,
+  "6ba7b810-9dad-11d1-80b4-00c04fd430c8": false
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Launch -->
                     <div class="endpoint-card">
                         <div class="endpoint-header">
@@ -112,7 +130,8 @@
                         </div>
                         <div class="p-6">
                             <p>Executes the application identified by <code>app_id</code> on the host machine. Uses Go's
-                                <code>os/exec</code> to spawn a detached process.</p>
+                                <code>os/exec</code> to spawn a detached process.
+                            </p>
                             <div class="grid grid-cols-2 gap-4 mt-4">
                                 <div class="bg-slate-900/50 p-3 rounded border border-slate-700/50">
                                     <span class="text-green-500 font-bold block text-xs">200 OK</span>
@@ -157,7 +176,7 @@
                             <span class="url">/</span>
                         </div>
                         <div class="p-6">
-                            <p>Serves the embedded web interface (HTML/CSS/JS) with glassmorphism design.</p>
+                            <p>Serves the embedded web client (SPA) for remote access.</p>
                             <div class="mt-4 bg-slate-900/50 p-3 rounded border border-slate-700">
                                 <span class="text-sm text-slate-300">All static files are embedded in the binary using
                                     Go's <code>embed</code> package. No external files required.</span>
@@ -193,6 +212,13 @@
                         <div class="card border-purple-500/30">
                             <h3 class="!mt-0 text-sm font-mono text-purple-300">RemoveApp(id) → void</h3>
                             <p class="text-sm">Removes an application from the configuration.</p>
+                        </div>
+
+                        <div class="card border-purple-500/30">
+                            <h3 class="!mt-0 text-sm font-mono text-purple-300">GetProcessStatuses() → map[string]bool
+                            </h3>
+                            <p class="text-sm">Returns a map of App IDs to running status. Used for real-time LED
+                                indicators.</p>
                         </div>
 
                         <div class="card border-purple-500/30">
@@ -237,7 +263,7 @@
                                     <li>Initializes config manager, server, and discovery</li>
                                     <li>Creates Wails app with Vue frontend</li>
                                     <li>Binds Go methods to JavaScript</li>
-                                    <li>Starts the window with glassmorphism UI</li>
+                                    <li>Initializes application window and lifecycle</li>
                                 </ul>
                             </div>
                         </div>
@@ -294,13 +320,23 @@
 
                         <div>
                             <h3 class="!mt-6 !text-base flex items-center gap-2 text-slate-200">
+                                <i class="fas fa-microchip text-yellow-500"></i> internal/processmon/
+                            </h3>
+                            <p class="text-xs text-slate-400"><strong>Role:</strong> Process Monitoring</p>
+                            <div class="bg-slate-800 p-3 rounded text-xs border border-slate-700 mt-2">
+                                <p class="mb-2">Uses WMI to query running processes and map them to configured apps.</p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="!mt-6 !text-base flex items-center gap-2 text-slate-200">
                                 <i class="fab fa-vuejs text-green-400"></i> frontend/src/
                             </h3>
                             <p class="text-xs text-slate-400"><strong>Role:</strong> Vue 3 UI</p>
                             <div class="bg-slate-800 p-3 rounded text-xs border border-slate-700 mt-2">
                                 <ul class="list-disc list-inside space-y-1 text-slate-300">
-                                    <li>App.vue: Main component with glassmorphism</li>
-                                    <li>style.css: Design system with gradients & blur</li>
+                                    <li>App.vue: Main application component</li>
+                                    <li>style.css: Core CSS definitions and Tailwind directives</li>
                                     <li>wailsjs/: Auto-generated TypeScript bindings</li>
                                 </ul>
                             </div>

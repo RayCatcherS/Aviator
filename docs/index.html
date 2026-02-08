@@ -37,30 +37,35 @@
         </header>
 
         <section>
-            <p class="text-xl font-light mb-8 opacity-80">
-                Aviator is a modern desktop application that lets you launch Windows applications remotely from any device on your local network, powered by Wails and featuring a beautiful glassmorphism UI.
+            Aviator is a desktop application that enables remote execution of Windows applications from devices on the
+            local network, utilizing Wails for backend-frontend communication.
             </p>
 
             <div class="grid grid-cols-2 gap-6 mb-12">
                 <div class="card">
                     <h3 class="!mt-0 mb-3 text-white"><i class="fas fa-rocket text-cyan-400 mr-2"></i> Launch Remotely
                     </h3>
-                    <p class="text-sm !mb-0">Control your PC applications from your phone's browser. Perfect for launching games, tools, or scripts from anywhere in your home.</p>
+                    <p class="text-sm !mb-0">Control your PC applications from your phone's browser. Perfect for
+                        launching games, tools, or scripts from anywhere in your home.</p>
                 </div>
                 <div class="card">
                     <h3 class="!mt-0 mb-3 text-white"><i class="fas fa-satellite-dish text-cyan-400 mr-2"></i> Zero
                         Config</h3>
-                    <p class="text-sm !mb-0">Automatic discovery via mDNS/Zeroconf. No IP typing required—just scan the QR code and you're connected.</p>
+                    <p class="text-sm !mb-0">Automatic discovery via mDNS/Zeroconf. No IP typing required—just scan the
+                        QR code and you're connected.</p>
                 </div>
                 <div class="card">
-                    <h3 class="!mt-0 mb-3 text-white"><i class="fas fa-swatchbook text-cyan-400 mr-2"></i> Premium UI
+                    <h3 class="!mt-0 mb-3 text-white"><i class="fas fa-swatchbook text-cyan-400 mr-2"></i> Responsive
+                        Interface
                     </h3>
-                    <p class="text-sm !mb-0">Glassmorphism design with smooth animations and blur effects. Native desktop experience powered by Wails.</p>
+                    <p class="text-sm !mb-0">Adaptive user interface built with Vue 3, ensuring usability across desktop
+                        and mobile viewports.</p>
                 </div>
                 <div class="card">
                     <h3 class="!mt-0 mb-3 text-white"><i class="fas fa-bolt text-cyan-400 mr-2"></i> Native
                         Performance</h3>
-                    <p class="text-sm !mb-0">Built with Go and Vue3. Fast, lightweight (~12 MB), with native file dialogs and system integration.</p>
+                    <p class="text-sm !mb-0">Built with Go and Vue3. Fast, lightweight (~12 MB), with native file
+                        dialogs and system integration.</p>
                 </div>
             </div>
 
@@ -93,22 +98,24 @@
             <div class="mt-8 grid grid-cols-2 gap-6">
                 <div class="card bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border-indigo-500/30">
                     <h3 class="!mt-0 mb-3"><i class="fas fa-desktop text-indigo-400 mr-2"></i>Desktop App</h3>
-                    <p class="text-sm mb-4">Native Windows application built with Wails, Go, and Vue 3. Features modern glassmorphism design and system tray integration.</p>
+                    <p class="text-sm mb-4">Native Windows application built with Wails, Go, and Vue 3. Includes system
+                        tray integration and process management.</p>
                     <ul class="text-sm space-y-1 text-slate-400">
-                        <li>• Manage applications with native file dialogs</li>
-                        <li>• Start/Stop HTTP server</li>
-                        <li>• View QR code and network URLs</li>
-                        <li>• Runs in system tray when minimized</li>
+                        <li>• Manage applications via file dialogs</li>
+                        <li>• Control HTTP server lifecycle</li>
+                        <li>• Display connection details (QR/URL)</li>
+                        <li>• Background execution via system tray</li>
                     </ul>
                 </div>
                 <div class="card bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border-cyan-500/30">
-                    <h3 class="!mt-0 mb-3"><i class="fas fa-mobile-alt text-cyan-400 mr-2"></i>Mobile Web</h3>
-                    <p class="text-sm mb-4">Beautiful web interface accessible from any device on your network. Optimized for mobile browsers with touch interactions.</p>
+                    <h3 class="!mt-0 mb-3"><i class="fas fa-mobile-alt text-cyan-400 mr-2"></i>Mobile Web Client</h3>
+                    <p class="text-sm mb-4">Lightweight web client served by the internal HTTP server. Provides remote
+                        control capabilities via REST API.</p>
                     <ul class="text-sm space-y-1 text-slate-400">
-                        <li>• Glassmorphism cards with animations</li>
-                        <li>• Touch-optimized launch buttons</li>
-                        <li>• Responsive design for all screen sizes</li>
-                        <li>• Works on iOS, Android, and desktop browsers</li>
+                        <li>• Status monitoring of remote processes</li>
+                        <li>• Execution triggers via touch interface</li>
+                        <li>• Responsive layout adaptation</li>
+                        <li>• Cross-browser compatibility</li>
                     </ul>
                 </div>
             </div>

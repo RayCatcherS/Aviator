@@ -17,6 +17,7 @@ Launch your Windows applications remotely from any device on your local network 
 - ⚡ **Fast & Lightweight** - Native performance with small footprint (~12 MB)
 - 🌐 **Cross-Platform Ready** - Built with Wails (Windows, macOS, Linux support)
 - 🎯 **Smart Launcher** - Launch apps with custom arguments and working directories
+- 📡 **Real-time Monitoring** - View running/stopped status of apps on both Desktop and Web Dashboard
 
 ## 📸 Screenshots
 
@@ -60,13 +61,14 @@ wails build
 1. **Launch Aviator** - Double-click `aviator-wails.exe`
 2. **Add Applications** - Click "Add App" and select your .exe files
 3. **Configure** - Optionally add launch arguments
-4. **Access** - Use the displayed URLs or scan the QR code
+4. **Monitor** - Check the status LED next to each app (Green = Running, Grey = Stopped)
+5. **Access** - Use the displayed URLs or scan the QR code
 
-### Mobile Access
+### Mobile/Web Access
 
-1. **Same Network** - Ensure your phone is on the same WiFi
-2. **Scan QR Code** - Use your phone's camera to scan the QR code
-3. **Launch Apps** - Tap any app card to launch it on your PC
+1. **Same Network** - Ensure your phone/device is on the same WiFi
+2. **Scan QR Code** - Use your phone's camera to scan the QR code on the desktop app
+3. **Launch & Monitor** - Tap any app card to launch it and view its real-time status
 4. **Auto-Discovery** - The app announces itself via mDNS
 
 ## 🏗️ Architecture
@@ -96,9 +98,12 @@ wails build
 
 ## 📚 Documentation
 
-- **[User Guide](internal/web/docs/user_guide.html)** - How to use Aviator
-- **[Architecture](internal/web/docs/architecture.html)** - Technical overview
-- **[API Reference](internal/web/docs/technical.html)** - REST API documentation
+- **[Overview](docs/index.html)** - General introduction and features
+- **[User Guide](docs/user_guide.html)** - How to use Aviator
+- **[Architecture](docs/architecture.html)** - Technical overview
+- **[API Reference](docs/technical.html)** - REST API documentation
+
+> **Note:** To view these docs as a website, enable **GitHub Pages** in your repository settings (Source: `/docs` folder). Otherwise, you will see the HTML source code.
 
 ## 🛠️ Development
 
@@ -183,6 +188,7 @@ When the server is running on port 8000:
 - `GET /` - Web interface (glassmorphism UI)
 - `GET /api/apps` - List configured applications
 - `POST /api/launch/{id}` - Launch an application
+- `GET /api/monitoring/status` - Get real-time process statuses
 - `GET /api/info` - Server information
 
 ## 🤝 Contributing

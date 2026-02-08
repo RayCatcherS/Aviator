@@ -58,15 +58,18 @@
             Go --> Config[Config Manager]
             Go --> Server[HTTP Server]
             Go --> Discovery[mDNS Service]
+            Go --> Monitor[Process Monitor]
         end
 
         subgraph Mobile["Mobile Device"]
             Browser[Mobile Browser] -->|HTTP /api/launch| Server
             Server -.->|mDNS Broadcast| Browser
+            Browser <-->|Polling /api/monitoring| Server
         end
 
         Server -->|os/exec| Windows[Windows OS]
         Windows -->|Launch| App[Target Application]
+        Monitor -.->|WMI Query| Windows
 
         linkStyle 0 stroke:#06b6d4,stroke-width:2px;
         linkStyle 3 stroke:#22d3ee,stroke-width:2px;
@@ -97,9 +100,9 @@
                         </li>
                         <li class="flex items-start gap-3">
                             <i class="fas fa-paint-brush text-cyan-500 mt-1"></i>
-                            <div><strong class="text-white">Glassmorphism CSS</strong><br /><span
-                                    class="text-sm text-slate-400">Custom design system with gradient backgrounds, blur
-                                    effects, and smooth transitions.</span></div>
+                            <div><strong class="text-white">Style System</strong><br /><span
+                                    class="text-sm text-slate-400">Utility-first CSS architecture utilizing Tailwind for
+                                    layout and component styling.</span></div>
                         </li>
                         <li class="flex items-start gap-3">
                             <i class="fas fa-qrcode text-cyan-500 mt-1"></i>
@@ -141,6 +144,13 @@
                                     service).</span>
                             </div>
                         </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-microchip text-blue-500 mt-1"></i>
+                            <div><strong class="text-white">Process Monitor</strong><br /><span
+                                    class="text-sm text-slate-400">Background worker tracking running applications via
+                                    WMI.</span>
+                            </div>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -175,13 +185,13 @@
             </div>
 
             <h2><i class="fas fa-mobile-alt text-green-500"></i> Mobile Web Interface</h2>
-            <p>The embedded HTTP server serves a glassmorphism web app accessible from any device on the network.</p>
+            <p>The embedded HTTP server serves a responsive web application for remote network access.</p>
 
             <div class="grid md:grid-cols-3 gap-6 mt-6">
                 <div class="card border-green-500/30">
-                    <h4 class="text-green-400 !mt-0 mb-2"><i class="fas fa-palette mr-2"></i>Pure CSS</h4>
-                    <p class="text-sm text-slate-400">No build step required. Glassmorphism effects using CSS
-                        backdrop-filter and modern gradients.</p>
+                    <h4 class="text-green-400 !mt-0 mb-2"><i class="fas fa-palette mr-2"></i>Native CSS</h4>
+                    <p class="text-sm text-slate-400">Component-scoped styling using modern CSS capabilities without
+                        external framework dependencies.</p>
                 </div>
                 <div class="card border-green-500/30">
                     <h4 class="text-green-400 !mt-0 mb-2"><i class="fas fa-mobile-screen-button mr-2"></i>Responsive
