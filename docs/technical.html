@@ -239,6 +239,17 @@
                         </div>
 
                         <div class="card border-purple-500/30">
+                            <h3 class="!mt-0 text-sm font-mono text-purple-300">GetSettings() → Settings</h3>
+                            <p class="text-sm">Retrieves global application preferences (Auto-Start, etc.).</p>
+                        </div>
+
+                        <div class="card border-purple-500/30">
+                            <h3 class="!mt-0 text-sm font-mono text-purple-300">UpdateSettings(s) → error</h3>
+                            <p class="text-sm">Persists settings to JSON and applies system changes (e.g., Windows
+                                Registry for auto-start).</p>
+                        </div>
+
+                        <div class="card border-purple-500/30">
                             <h3 class="!mt-0 text-sm font-mono text-purple-300">SelectFile() → string</h3>
                             <p class="text-sm">Opens a native Windows file dialog for selecting executables. Returns the
                                 selected file path.</p>
@@ -301,8 +312,8 @@
                             </h3>
                             <p class="text-xs text-slate-400"><strong>Role:</strong> Configuration Manager</p>
                             <div class="bg-slate-800 p-3 rounded text-xs border border-slate-700 mt-2">
-                                <p>JSON persistence in <code>%LOCALAPPDATA%/Aviator/config.json</code>. Thread-safe
-                                    operations with sync.RWMutex.</p>
+                                <p>JSON persistence: <code>config.json</code> (Apps) and <code>settings.json</code>
+                                    (Preferences) in <code>%LOCALAPPDATA%/Aviator/</code>.</p>
                             </div>
                         </div>
 

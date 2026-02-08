@@ -226,13 +226,21 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🗺️ Roadmap
 
-- [ ] Auto-start on Windows boot
-- [ ] Custom app icons
-- [ ] Application usage statistics
-- [ ] macOS and Linux builds
-- [ ] Mobile companion app
-- [ ] Dark/Light mode toggle
+### **v2.1 - Security & Power Controls**
+- [ ] **🔐 PIN Authentication** - Protect remote access with a passcode
+- [ ] **⚡ System Power Controls** - Sleep, Shutdown, and Restart PC remotely
+- [ ] **🔊 Volume Control** - Adjust system volume from the web dashboard
 
+### **v2.2 - Organization & Customization**
+- [ ] **🏪 Microsoft Store Apps** - Support for launching UWP apps (Netflix, Spotify) via AUMID
+- [ ] **📂 Categories** - Group apps (e.g., "Games", "Work") with filters
+- [ ] **🖼️ Custom Icons** - Upload custom images/icons for applications
+- [ ] **🎨 Advanced Themes** - Multiple color schemes (Cyberpunk, Minimal, Matrix)
+
+### **v2.3 - Advanced Features**
+- [ ] **📱 PWA Support** - Install web dashboard as a native app on mobile
+- [ ] **📊 Usage Statistics** - Track launch counts and usage metrics
+- [ ] **🐧 Cross-Platform Core** - Expand support to macOS and Linux
 ## 📧 Contact
 
 - **Author**: RayCatcherS
