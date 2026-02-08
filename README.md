@@ -5,6 +5,7 @@
 Launch your Windows applications remotely from any device on your local network with a beautiful, modern interface powered by Wails.
 
 ![Version](https://img.shields.io/badge/version-2.0.0-blue)
+[![Docs](https://img.shields.io/badge/docs-online-green)](https://RayCatcherS.github.io/Aviator/)
 ![Wails](https://img.shields.io/badge/Wails-v2.11.0-00ACD7)
 ![Vue](https://img.shields.io/badge/Vue-3-42b883)
 ![Go](https://img.shields.io/badge/Go-1.23-00ADD8)
@@ -98,12 +99,16 @@ wails build
 
 ## 📚 Documentation
 
-- **[Overview](docs/index.html)** - General introduction and features
-- **[User Guide](docs/user_guide.html)** - How to use Aviator
-- **[Architecture](docs/architecture.html)** - Technical overview
-- **[API Reference](docs/technical.html)** - REST API documentation
+📖 **[Read the Full Documentation Online](https://RayCatcherS.github.io/Aviator/)**
 
-> **Note:** To view these docs as a website, enable **GitHub Pages** in your repository settings (Source: `/docs` folder). Otherwise, you will see the HTML source code.
+Explore the comprehensive guides hosting on GitHub Pages:
+
+- **[Overview](https://RayCatcherS.github.io/Aviator/)** - General introduction and features
+- **[User Guide](https://RayCatcherS.github.io/Aviator/user_guide.html)** - How to use Aviator
+- **[Architecture](https://RayCatcherS.github.io/Aviator/architecture.html)** - Technical overview
+- **[API Reference](https://RayCatcherS.github.io/Aviator/technical.html)** - REST API documentation
+
+*(Source files are available in the [`docs/`](docs/) directory)*
 
 ## 🛠️ Development
 
