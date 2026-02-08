@@ -20,6 +20,18 @@ export namespace config {
 	        this.icon = source["icon"];
 	    }
 	}
+	export class Settings {
+	    auto_start: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new Settings(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.auto_start = source["auto_start"];
+	    }
+	}
 
 }
 

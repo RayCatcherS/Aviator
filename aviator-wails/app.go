@@ -62,6 +62,11 @@ func (a *App) startup(ctx context.Context) {
 
 	// Start background process monitoring
 	go a.monitorProcesses()
+
+	// Auto-start HTTP Server
+	if err := a.StartServer(); err != nil {
+		log.Printf("Failed to auto-start server: %v", err)
+	}
 }
 
 // monitorProcesses polls for running processes every 3 seconds
@@ -297,6 +302,16 @@ func (a *App) AllowClose(ctx context.Context) (prevent bool) {
 // GetContext returns the application context
 func (a *App) GetContext() context.Context {
 	return a.ctx
+}
+
+// GetSettings returns current application settings
+func (a *App) GetSettings() config.Settings {
+	return a.config.GetSettings()
+}
+
+// UpdateSettings saves new settings
+func (a *App) UpdateSettings(s config.Settings) error {
+	return a.config.UpdateSettings(s)
 }
 
 // Helper function to get outbound IP

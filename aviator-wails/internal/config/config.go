@@ -19,10 +19,16 @@ type App struct {
 	Icon string `json:"icon,omitempty"` // Base64 encoded PNG icon
 }
 
+type Settings struct {
+	AutoStart bool `json:"auto_start"`
+}
+
 type ConfigManager struct {
-	Apps     []App
-	FilePath string
-	mu       sync.RWMutex
+	Apps         []App
+	Settings     Settings
+	FilePath     string // config.json (apps)
+	SettingsPath string // settings.json (preferences)
+	mu           sync.RWMutex
 }
 
 func NewConfigManager() (*ConfigManager, error) {
@@ -46,11 +52,14 @@ func NewConfigManager() (*ConfigManager, error) {
 	}
 
 	cm := &ConfigManager{
-		Apps:     []App{},
-		FilePath: filepath.Join(aviatorDir, "config.json"),
+		Apps:         []App{},
+		Settings:     Settings{AutoStart: false},
+		FilePath:     filepath.Join(aviatorDir, "config.json"),
+		SettingsPath: filepath.Join(aviatorDir, "settings.json"),
 	}
 
-	cm.Load() // Ignore error on load, just start empty
+	cm.Load()         // Ignore error on load apps
+	cm.LoadSettings() // Ignore error on load settings
 	return cm, nil
 }
 
@@ -168,4 +177,63 @@ func (cm *ConfigManager) GetAppByID(id string) (App, bool) {
 		}
 	}
 	return App{}, false
+}
+
+// Settings Management
+
+func (cm *ConfigManager) LoadSettings() error {
+	cm.mu.Lock()
+	defer cm.mu.Unlock()
+
+	data, err := os.ReadFile(cm.SettingsPath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			// Start with default settings
+			cm.Settings = Settings{AutoStart: IsAutoStartEnabled()}
+			return nil
+		}
+		return err
+	}
+
+	err = json.Unmarshal(data, &cm.Settings)
+
+	// Sync with Registry just in case of mismatch on startup
+	// If config says true but registry false -> trust registry? Or config?
+	// Let's trust registry as source of truth for "active" state,
+	// but config file as persistence for user intention.
+	// Actually, easier: Read registry state into memory.
+	cm.Settings.AutoStart = IsAutoStartEnabled()
+
+	return err
+}
+
+func (cm *ConfigManager) SaveSettings() error {
+	cm.mu.RLock()
+	defer cm.mu.RUnlock()
+
+	data, err := json.MarshalIndent(cm.Settings, "", "    ")
+	if err != nil {
+		return err
+	}
+
+	return os.WriteFile(cm.SettingsPath, data, 0644)
+}
+
+func (cm *ConfigManager) GetSettings() Settings {
+	cm.mu.RLock()
+	defer cm.mu.RUnlock()
+	return cm.Settings
+}
+
+func (cm *ConfigManager) UpdateSettings(s Settings) error {
+	cm.mu.Lock()
+	cm.Settings = s
+	cm.mu.Unlock()
+
+	// Apply System Changes
+	if err := SetAutoStart(s.AutoStart); err != nil {
+		return err
+	}
+
+	return cm.SaveSettings()
 }

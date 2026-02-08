@@ -13,6 +13,8 @@ export function GetProcessStatuses():Promise<Record<string, boolean>>;
 
 export function GetServerInfo():Promise<Record<string, any>>;
 
+export function GetSettings():Promise<config.Settings>;
+
 export function Hide():Promise<void>;
 
 export function IsServerRunning():Promise<boolean>;
@@ -34,3 +36,5 @@ export function StartServer():Promise<void>;
 export function StopServer():Promise<void>;
 
 export function UpdateApp(arg1:string,arg2:string,arg3:string,arg4:string):Promise<boolean>;
+
+export function UpdateSettings(arg1:config.Settings):Promise<void>;

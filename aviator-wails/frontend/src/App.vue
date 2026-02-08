@@ -14,6 +14,9 @@
         <span class="text-xs font-semibold text-white/90 tracking-wide">Aviator</span>
       </div>
       <div class="title-bar-controls flex gap-[1px]">
+        <button class="title-btn w-12 h-8 flex items-center justify-center bg-transparent hover:bg-white/10 text-white/80 hover:text-white transition-colors" @click="openSettings" title="Settings">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        </button>
         <button class="title-btn w-12 h-8 flex items-center justify-center bg-transparent hover:bg-white/10 text-white/80 hover:text-white transition-colors" @click="minimizeWindow" title="Minimize">
           <svg width="10" height="10" viewBox="0 0 12 12"><line x1="0" y1="6" x2="12" y2="6" stroke="currentColor" stroke-width="1"/></svg>
         </button>
@@ -147,7 +150,7 @@
     </div>
 
     <!-- Add/Edit Dialog -->
-    <div v-if="showDialog" class="dialog-overlay" @click.self="closeDialog">
+    <div v-if="showDialog" class="dialog-overlay">
       <div class="glass-card p-8 rounded-2xl w-full max-w-md shadow-2xl m-4 animate-fade-in-up">
         <h2 class="text-2xl font-bold mb-6 text-white">{{ editingApp ? 'Edit' : 'Add' }} Application</h2>
         
@@ -177,12 +180,46 @@
         </div>
       </div>
     </div>
+
+    <!-- Settings Dialog -->
+    <div v-if="showSettings" class="dialog-overlay">
+      <div class="glass-card p-8 rounded-2xl w-full max-w-sm shadow-2xl m-4 animate-fade-in-up">
+        <h2 class="text-2xl font-bold mb-6 text-white flex items-center gap-3">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          Settings
+        </h2>
+        
+        <div class="space-y-6">
+          <div class="flex items-center justify-between p-4 glass-card bg-white/5 rounded-xl">
+            <div>
+              <div class="font-semibold text-slate-200">Run at Startup</div>
+              <div class="text-xs text-slate-400">Launch Aviator when Windows starts</div>
+            </div>
+            
+            <button 
+              @click="toggleAutoStart"
+              class="w-12 h-6 rounded-full relative transition-colors duration-200 ease-in-out focus:outline-none"
+              :class="settings.auto_start ? 'bg-cyan-500' : 'bg-slate-600'"
+            >
+              <div 
+                class="absolute top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform duration-200 ease-in-out shadow"
+                :class="settings.auto_start ? 'translate-x-6' : 'translate-x-0'"
+              ></div>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex gap-4 mt-8">
+          <button @click="closeSettings" class="glass-button w-full font-bold">Done</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
-import { GetApps, AddApp, UpdateApp, RemoveApp, GetServerInfo, SelectFile, StartServer, StopServer, GetProcessStatuses } from '../wailsjs/go/main/App';
+import { GetApps, AddApp, UpdateApp, RemoveApp, GetServerInfo, SelectFile, StartServer, StopServer, GetProcessStatuses, GetSettings, UpdateSettings } from '../wailsjs/go/main/App';
 import { BrowserOpenURL, EventsOn, WindowMinimise, WindowToggleMaximise, Quit } from '../wailsjs/runtime/runtime';
 import QRCode from 'qrcode';
 
@@ -203,6 +240,9 @@ const dialogData = ref({
   args: ''
 });
 
+const showSettings = ref(false);
+const settings = ref({ auto_start: false });
+
 const qrCanvas = ref(null);
 let statusPollInterval = null;
 
@@ -210,6 +250,7 @@ onMounted(async () => {
   await loadApps();
   await loadServerInfo();
   await loadProcessStatuses();
+  await loadSettings();
   
   // Poll process statuses every 2 seconds
   statusPollInterval = setInterval(loadProcessStatuses, 2000);
@@ -243,6 +284,26 @@ async function loadProcessStatuses() {
     processStatuses.value = await GetProcessStatuses();
   } catch (err) {
     console.error('Failed to load process statuses:', err);
+  }
+}
+
+async function loadSettings() {
+  try {
+    settings.value = await GetSettings();
+  } catch (err) {
+    console.error('Failed to load settings:', err);
+  }
+}
+
+async function toggleAutoStart() {
+  settings.value.auto_start = !settings.value.auto_start;
+  try {
+    await UpdateSettings(settings.value);
+  } catch (err) {
+    console.error('Failed to save settings:', err);
+    // Revert on error
+    settings.value.auto_start = !settings.value.auto_start;
+    alert('Failed to update system settings: ' + err);
   }
 }
 
@@ -345,6 +406,15 @@ async function launchApp(id) {
 function closeDialog() {
   showDialog.value = false;
   editingApp.value = null;
+}
+
+function openSettings() {
+  loadSettings(); // Refresh
+  showSettings.value = true;
+}
+
+function closeSettings() {
+  showSettings.value = false;
 }
 
 async function selectFile() {

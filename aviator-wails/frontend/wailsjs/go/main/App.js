@@ -22,6 +22,10 @@ export function GetServerInfo() {
   return window['go']['main']['App']['GetServerInfo']();
 }
 
+export function GetSettings() {
+  return window['go']['main']['App']['GetSettings']();
+}
+
 export function Hide() {
   return window['go']['main']['App']['Hide']();
 }
@@ -64,4 +68,8 @@ export function StopServer() {
 
 export function UpdateApp(arg1, arg2, arg3, arg4) {
   return window['go']['main']['App']['UpdateApp'](arg1, arg2, arg3, arg4);
+}
+
+export function UpdateSettings(arg1) {
+  return window['go']['main']['App']['UpdateSettings'](arg1);
 }
