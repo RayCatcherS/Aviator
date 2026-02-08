@@ -3,6 +3,7 @@ module aviator-wails
 go 1.23
 
 require (
+	github.com/energye/systray v1.0.3
 	github.com/google/uuid v1.6.0
 	github.com/grandcat/zeroconf v1.0.0
 	github.com/wailsapp/wails/v2 v2.11.0

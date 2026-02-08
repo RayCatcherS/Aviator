@@ -16,24 +16,43 @@ import (
 
 // App struct
 type App struct {
-	ctx            context.Context
-	config         *config.ConfigManager
-	server         *server.Server
-	discovery      *discovery.DiscoveryService
-	processMonitor *processmon.ProcessMonitor
-	serverRunning  bool
+	ctx             context.Context
+	config          *config.ConfigManager
+	server          *server.Server
+	discovery       *discovery.DiscoveryService
+	processMonitor  *processmon.ProcessMonitor
+	serverRunning   bool
+	isQuitting      bool
+	isWindowVisible bool
 }
 
 // NewApp creates a new App application struct
 func NewApp(cm *config.ConfigManager, srv *server.Server, ds *discovery.DiscoveryService) *App {
 	// Use the process monitor from server (shared instance)
 	return &App{
-		config:         cm,
-		server:         srv,
-		discovery:      ds,
-		processMonitor: srv.ProcessMonitor,
-		serverRunning:  false,
+		config:          cm,
+		server:          srv,
+		discovery:       ds,
+		processMonitor:  srv.ProcessMonitor,
+		serverRunning:   false,
+		isQuitting:      false,
+		isWindowVisible: true,
 	}
+}
+
+// IsServerRunning returns true if the server is active
+func (a *App) IsServerRunning() bool {
+	return a.serverRunning
+}
+
+// IsWindowVisible returns true if window is shown
+func (a *App) IsWindowVisible() bool {
+	return a.isWindowVisible
+}
+
+// SetQuitting sets the quit flag
+func (a *App) SetQuitting(quitting bool) {
+	a.isQuitting = quitting
 }
 
 // startup is called when the app starts
@@ -220,6 +239,64 @@ func (a *App) SelectFile() (string, error) {
 // GetProcessStatuses returns the running status of all launched apps
 func (a *App) GetProcessStatuses() map[string]bool {
 	return a.processMonitor.GetAllStatuses()
+}
+
+// Show makes the window visible and focused
+func (a *App) Show() {
+	if a.ctx != nil {
+		runtime.WindowShow(a.ctx)
+		a.isWindowVisible = true
+	}
+}
+
+// Hide hides the window
+func (a *App) Hide() {
+	if a.ctx != nil {
+		runtime.WindowHide(a.ctx)
+		a.isWindowVisible = false
+	}
+}
+
+// OnBeforeClose handles window closing event
+func (a *App) AllowClose(ctx context.Context) (prevent bool) {
+	if !a.isQuitting {
+		// Just hide the window instead of closing
+		a.Hide()
+		return true // Prevent actual close
+	}
+
+	// Attempting to quit fully (from Tray)
+	if a.serverRunning {
+		// Ask confirmation if server is running
+		// Note: We show the window first to ensure dialog is visible
+		runtime.WindowShow(ctx)
+
+		res, err := runtime.MessageDialog(ctx, runtime.MessageDialogOptions{
+			Type:          runtime.QuestionDialog,
+			Title:         "Confirm Exit",
+			Message:       "The server is running. Do you want to stop it and exit?",
+			Buttons:       []string{"Yes", "No"},
+			DefaultButton: "Yes",
+			CancelButton:  "No",
+		})
+
+		if err != nil || res != "Yes" {
+			// User cancelled execution or error occurred
+			// Reset quitting flag so next X click just hides
+			a.isQuitting = false
+			return true // Prevent close
+		}
+
+		// User said Yes -> Stop server
+		a.StopServer()
+	}
+
+	return false // Allow close
+}
+
+// GetContext returns the application context
+func (a *App) GetContext() context.Context {
+	return a.ctx
 }
 
 // Helper function to get outbound IP

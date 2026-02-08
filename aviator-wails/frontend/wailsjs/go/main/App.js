@@ -10,12 +10,28 @@ export function GetApps() {
   return window['go']['main']['App']['GetApps']();
 }
 
+export function GetContext() {
+  return window['go']['main']['App']['GetContext']();
+}
+
 export function GetProcessStatuses() {
   return window['go']['main']['App']['GetProcessStatuses']();
 }
 
 export function GetServerInfo() {
   return window['go']['main']['App']['GetServerInfo']();
+}
+
+export function Hide() {
+  return window['go']['main']['App']['Hide']();
+}
+
+export function IsServerRunning() {
+  return window['go']['main']['App']['IsServerRunning']();
+}
+
+export function IsWindowVisible() {
+  return window['go']['main']['App']['IsWindowVisible']();
 }
 
 export function LaunchApp(arg1) {
@@ -28,6 +44,14 @@ export function RemoveApp(arg1) {
 
 export function SelectFile() {
   return window['go']['main']['App']['SelectFile']();
+}
+
+export function SetQuitting(arg1) {
+  return window['go']['main']['App']['SetQuitting'](arg1);
+}
+
+export function Show() {
+  return window['go']['main']['App']['Show']();
 }
 
 export function StartServer() {
