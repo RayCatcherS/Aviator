@@ -19,6 +19,7 @@ Launch your Windows applications remotely from any device on your local network 
 - 🌐 **Cross-Platform Ready** - Built with Wails (Windows, macOS, Linux support)
 - 🎯 **Smart Launcher** - Launch apps with custom arguments and working directories
 - 📡 **Real-time Monitoring** - View running/stopped status of apps on both Desktop and Web Dashboard
+- 🖱️ **System Tray** - Background execution, quick access menu, and minimize-to-tray functionality
 
 ## 📸 Screenshots
 
@@ -225,13 +226,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🗺️ Roadmap
 
-- [ ] System tray integration
-- [ ] Dark/Light mode toggle
+- [ ] Auto-start on Windows boot
 - [ ] Custom app icons
 - [ ] Application usage statistics
-- [ ] Auto-start on Windows boot
 - [ ] macOS and Linux builds
 - [ ] Mobile companion app
+- [ ] Dark/Light mode toggle
 
 ## 📧 Contact
 
