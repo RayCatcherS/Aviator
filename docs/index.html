@@ -24,48 +24,49 @@
         </div>
         <nav class="px-4 space-y-1">
             <a href="index.html" class="sidebar-link active">Overview</a>
-            <a href="user_guide.html" class="sidebar-link">User Guide</a>
+            <a href="manual.html" class="sidebar-link">User Manual</a>
             <a href="architecture.html" class="sidebar-link">Architecture</a>
-            <a href="technical.html" class="sidebar-link">Technical API</a>
+            <a href="api.html" class="sidebar-link">API Reference</a>
         </nav>
     </aside>
 
     <!-- Main Content -->
     <main class="ml-64 p-12 w-full">
         <header class="mb-12">
-            <h1>Introduction</h1>
+            <h1>Overview</h1>
         </header>
 
         <section>
-            Aviator is a desktop application that enables remote execution of Windows applications from devices on the
-            local network, utilizing Wails for backend-frontend communication.
+            <p class="text-lg text-slate-300 mb-8">
+                Aviator is a local network application launcher and process monitor. It allows you to launch and monitor
+                Windows applications remotely from any device on your local network via a secure internal HTTP server.
             </p>
 
             <div class="grid grid-cols-2 gap-6 mb-12">
                 <div class="card">
-                    <h3 class="!mt-0 mb-3 text-white"><i class="fas fa-rocket text-cyan-400 mr-2"></i> Launch Remotely
+                    <h3 class="!mt-0 mb-3 text-white"><i class="fas fa-network-wired text-cyan-400 mr-2"></i> Remote
+                        Execution
                     </h3>
-                    <p class="text-sm !mb-0">Control your PC applications from your phone's browser. Perfect for
-                        launching games, tools, or scripts from anywhere in your home.</p>
+                    <p class="text-sm !mb-0">Launch executables on the host machine via authenticated HTTP requests from
+                        mobile or other desktop devices.</p>
                 </div>
                 <div class="card">
-                    <h3 class="!mt-0 mb-3 text-white"><i class="fas fa-satellite-dish text-cyan-400 mr-2"></i> Zero
-                        Config</h3>
-                    <p class="text-sm !mb-0">Automatic discovery via mDNS/Zeroconf. No IP typing required—just scan the
-                        QR code and you're connected.</p>
+                    <h3 class="!mt-0 mb-3 text-white"><i class="fas fa-heartbeat text-cyan-400 mr-2"></i> Process
+                        Monitoring</h3>
+                    <p class="text-sm !mb-0">Real-time status tracking of configured applications using native Windows
+                        process APIs.</p>
                 </div>
                 <div class="card">
-                    <h3 class="!mt-0 mb-3 text-white"><i class="fas fa-swatchbook text-cyan-400 mr-2"></i> Responsive
-                        Interface
+                    <h3 class="!mt-0 mb-3 text-white"><i class="fas fa-shield-alt text-cyan-400 mr-2"></i> Security
                     </h3>
-                    <p class="text-sm !mb-0">Adaptive user interface built with Vue 3, ensuring usability across desktop
-                        and mobile viewports.</p>
+                    <p class="text-sm !mb-0">PIN-based authentication with HttpOnly cookies ensuring secure access
+                        control
+                        within the local network.</p>
                 </div>
                 <div class="card">
-                    <h3 class="!mt-0 mb-3 text-white"><i class="fas fa-bolt text-cyan-400 mr-2"></i> Native
-                        Performance</h3>
-                    <p class="text-sm !mb-0">Built with Go and Vue3. Fast, lightweight (~12 MB), with native file
-                        dialogs and system integration.</p>
+                    <h3 class="!mt-0 mb-3 text-white"><i class="fas fa-code text-cyan-400 mr-2"></i> Tech Stack</h3>
+                    <p class="text-sm !mb-0">Built with Go (Backend/Server), Wails (Bindings), and Vue 3 (Desktop UI).
+                    </p>
                 </div>
             </div>
 
@@ -75,50 +76,45 @@
                     <div class="flex gap-4 items-center">
                         <span
                             class="bg-slate-900 w-8 h-8 flex items-center justify-center rounded-full text-cyan-500 font-bold border border-cyan-500/30">1</span>
-                        <p class="!mb-0">Download <code>aviator-wails.exe</code> from the releases page.</p>
+                        <p class="!mb-0">Download the latest release.</p>
                     </div>
                     <div class="flex gap-4 items-center">
                         <span
                             class="bg-slate-900 w-8 h-8 flex items-center justify-center rounded-full text-cyan-500 font-bold border border-cyan-500/30">2</span>
-                        <p class="!mb-0">Launch the application—the interface opens automatically.</p>
+                        <p class="!mb-0">Run <code>aviator-wails.exe</code> (Portable, no install required).</p>
                     </div>
                     <div class="flex gap-4 items-center">
                         <span
                             class="bg-slate-900 w-8 h-8 flex items-center justify-center rounded-full text-cyan-500 font-bold border border-cyan-500/30">3</span>
-                        <p class="!mb-0">Click "Add App" to add your favorite Windows applications.</p>
+                        <p class="!mb-0">Add applications via the "Add App" button.</p>
                     </div>
                     <div class="flex gap-4 items-center">
                         <span
                             class="bg-slate-900 w-8 h-8 flex items-center justify-center rounded-full text-cyan-500 font-bold border border-cyan-500/30">4</span>
-                        <p class="!mb-0">Start the server and scan the QR code with your phone!</p>
+                        <p class="!mb-0">Start the server and access the dashboard via the displayed QR code.</p>
                     </div>
                 </div>
             </div>
 
-            <div class="mt-8 grid grid-cols-2 gap-6">
-                <div class="card bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border-indigo-500/30">
-                    <h3 class="!mt-0 mb-3"><i class="fas fa-desktop text-indigo-400 mr-2"></i>Desktop App</h3>
-                    <p class="text-sm mb-4">Native Windows application built with Wails, Go, and Vue 3. Includes system
-                        tray integration and process management.</p>
-                    <ul class="text-sm space-y-1 text-slate-400">
-                        <li>• Manage applications via file dialogs</li>
-                        <li>• Control HTTP server lifecycle</li>
-                        <li>• Display connection details (QR/URL)</li>
-                        <li>• Background execution via system tray</li>
-                        <li>• Secure PIN management and modification</li>
-                        <li>• Auto-start with Windows</li>
-                    </ul>
-                </div>
-                <div class="card bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border-cyan-500/30">
-                    <h3 class="!mt-0 mb-3"><i class="fas fa-mobile-alt text-cyan-400 mr-2"></i>Mobile Web Client</h3>
-                    <p class="text-sm mb-4">Lightweight web client served by the internal HTTP server. Provides remote
-                        control capabilities via REST API.</p>
-                    <ul class="text-sm space-y-1 text-slate-400">
-                        <li>• Secure PIN-protected remote access</li>
-                        <li>• Status monitoring of remote processes</li>
-                        <li>• Execution triggers via touch interface</li>
-                        <li>• Responsive glassmorphism interface</li>
-                    </ul>
+            <div class="mt-8">
+                <h2>Documentation Index</h2>
+                <div class="grid grid-cols-3 gap-6">
+                    <a href="manual.html" class="card hover:bg-slate-800 transition-colors block text-decoration-none">
+                        <h3 class="!mt-0"><i class="fas fa-book text-cyan-400 mr-2"></i> User Manual</h3>
+                        <p class="text-sm text-slate-400 !mb-0">Installation, configuration, and troubleshooting guide.
+                        </p>
+                    </a>
+                    <a href="architecture.html"
+                        class="card hover:bg-slate-800 transition-colors block text-decoration-none">
+                        <h3 class="!mt-0"><i class="fas fa-sitemap text-cyan-400 mr-2"></i> Architecture</h3>
+                        <p class="text-sm text-slate-400 !mb-0">System design, components, and data flow diagrams.</p>
+                    </a>
+                    <a href="api.html" class="card hover:bg-slate-800 transition-colors block text-decoration-none">
+                        <h3 class="!mt-0"><i class="fas fa-server text-cyan-400 mr-2"></i> API Reference</h3>
+                        <p class="text-sm text-slate-400 !mb-0">REST API endpoints, authentication, and response
+                            formats.
+                        </p>
+                    </a>
                 </div>
             </div>
         </section>

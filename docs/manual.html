@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aviator - User Manual</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="style.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body class="min-h-screen flex">
+
+    <!-- Sidebar -->
+    <aside class="w-64 fixed h-full overflow-y-auto z-20">
+        <div class="p-6 mb-4 text-center">
+            <a href="index.html" class="block hover:opacity-80 transition-opacity">
+                <h2
+                    class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 tracking-widest uppercase mb-1">
+                    Aviator</h2>
+                <p class="text-xs text-slate-500 font-mono">DOCS v2.4</p>
+            </a>
+        </div>
+        <nav class="px-4 space-y-1">
+            <a href="index.html" class="sidebar-link">Overview</a>
+            <a href="manual.html" class="sidebar-link active">User Manual</a>
+            <a href="architecture.html" class="sidebar-link">Architecture</a>
+            <a href="api.html" class="sidebar-link">API Reference</a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="ml-64 p-12 w-full">
+        <header class="mb-12">
+            <h1>User Manual</h1>
+        </header>
+
+        <section class="space-y-12">
+
+            <!-- Installation -->
+            <div>
+                <h2>Installation</h2>
+                <div class="card">
+                    <ol class="list-decimal list-inside space-y-4 text-slate-300">
+                        <li>
+                            <strong class="text-white">Download</strong>: Get the latest release from the <a
+                                href="https://github.com/RayCatcherS/Aviator/releases"
+                                class="text-cyan-400 hover:text-cyan-300">Releases page</a>.
+                        </li>
+                        <li>
+                            <strong class="text-white">Run</strong>: Execute <code>aviator-wails.exe</code>. No
+                            installation is required as it is a portable application.
+                        </li>
+                        <li>
+                            <strong class="text-white">Prerequisites</strong>: Windows 10 or 11 (WebView2 is usually
+                            pre-installed).
+                        </li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- Configuration -->
+            <div>
+                <h2>Configuration</h2>
+
+                <h3 class="text-white mb-4"><i class="fas fa-plus-circle text-cyan-400 mr-2"></i> Adding Applications
+                </h3>
+                <div class="card">
+                    <ol class="list-decimal list-inside space-y-2 text-slate-300">
+                        <li>Click <strong>Add App</strong> in the top right corner of the window.</li>
+                        <li>Enter a friendly <strong>Name</strong> for the application.</li>
+                        <li>Browse for the <strong>Executable Path</strong> (<code>.exe</code> file).</li>
+                        <li>Optionally add <strong>Arguments</strong> (e.g., specific flags like
+                            <code>--fullscreen</code>).</li>
+                    </ol>
+                </div>
+
+                <h3 class="text-white mb-4 mt-8"><i class="fas fa-lock text-cyan-400 mr-2"></i> Security Setup</h3>
+                <p class="text-slate-400 mb-4">By default, the internal HTTP server is accessible to anyone on your
+                    local network. It is highly recommended to set a PIN.</p>
+                <div class="card border-l-4 border-l-yellow-500">
+                    <ol class="list-decimal list-inside space-y-2 text-slate-300">
+                        <li>Click the <strong>Settings Gear</strong> icon (top right).</li>
+                        <li>Select <strong>Modify PIN</strong>.</li>
+                        <li>Set a <strong>4-6 digit PIN</strong> to enable authentication.</li>
+                        <li>This PIN will be required to access the web dashboard from other devices.</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- Remote Access -->
+            <div>
+                <h2>Remote Access</h2>
+                <div class="card bg-slate-800/50">
+                    <ul class="space-y-4 text-slate-300">
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                            <div>
+                                <strong class="text-white block">Ensure Server is Running</strong>
+                                Check for the green status indicator in the desktop app.
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-qrcode text-cyan-400 mt-1"></i>
+                            <div>
+                                <strong class="text-white block">Scan QR Code</strong>
+                                Use your mobile device's camera to scan the QR displayed in the dashboard.
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-globe text-blue-400 mt-1"></i>
+                            <div>
+                                <strong class="text-white block">Manual Connect</strong>
+                                Alternatively, navigate to <code>http://&lt;YOUR_IP&gt;:8000</code> in a web browser.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Troubleshooting -->
+            <div>
+                <h2>Troubleshooting</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="card border-l-4 border-l-red-500/50">
+                        <h3 class="!mt-0 !mb-2 text-white">Server Offline</h3>
+                        <p class="text-sm !mb-0">Click "Start Server" in the dashboard. Ensure port <code>8000</code> is
+                            not in use by another application.</p>
+                    </div>
+                    <div class="card border-l-4 border-l-orange-500/50">
+                        <h3 class="!mt-0 !mb-2 text-white">Connection Failed</h3>
+                        <p class="text-sm !mb-0">Ensure both devices are on the same Wi-Fi. Check Windows Firewall
+                            settings to allow <code>aviator-wails.exe</code>.</p>
+                    </div>
+                    <div class="card border-l-4 border-l-blue-500/50">
+                        <h3 class="!mt-0 !mb-2 text-white">App Not Launching</h3>
+                        <p class="text-sm !mb-0">Verify the path is correct and the user has permissions to execute the
+                            file.</p>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+</body>
+
+</html>

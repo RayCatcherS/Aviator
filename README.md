@@ -1,259 +1,52 @@
-# Aviator ✈️
+# Aviator
 
-> **Modern desktop application launcher with glassmorphism UI and network control**
+**Local network application launcher and process monitor.**
 
-Launch your Windows applications remotely from any device on your local network with a beautiful, modern interface powered by Wails.
+Aviator is a desktop application that allows you to launch and monitor Windows applications remotely from any device on your local network. It exposes a secure internal HTTP server that serves a mobile-optimized dashboard.
 
-![Version](https://img.shields.io/badge/version-2.4.0-blue)
-[![Docs](https://img.shields.io/badge/docs-online-green)](https://RayCatcherS.github.io/Aviator/)
-![Wails](https://img.shields.io/badge/Wails-v2.11.0-00ACD7)
-![Vue](https://img.shields.io/badge/Vue-3-42b883)
-![Go](https://img.shields.io/badge/Go-1.23-00ADD8)
+![Version](https://img.shields.io/badge/version-2.8.2-blue)
+![Stack](https://img.shields.io/badge/stack-Go_|_Vue_|_Wails-00ADD8)
 
-## ✨ Features
+## Documentation
 
-- 🎨 **Glassmorphism UI** - Modern, premium interface with blur effects and smooth animations
-- 📱 **Mobile Access** - Control your PC applications from your phone or tablet
-- 🔒 **Secure Auth** - PIN-protected remote access with visibility toggle and HttpOnly session cookies
-- ⚙️ **Customizable Security** - Set and modify your 6-digit access PIN directly from the desktop settings
-- 🔍 **Auto-Discovery** - Zero-configuration setup with mDNS (scan QR code and go)
-- ⚡ **Fast & Lightweight** - Native performance with small footprint (~12 MB)
-- 🌐 **Cross-Platform Ready** - Built with Wails (Windows, macOS, Linux support)
-- 🎯 **Smart Launcher** - Launch apps with custom arguments and working directories
-- 📡 **Real-time Monitoring** - View running/stopped status of apps on both Desktop and Web Dashboard
-- 🖱️ **System Tray** - Background execution, quick access menu, and minimize-to-tray functionality
+-   [**User Manual**](docs/manual.html) - Installation and configuration guide.
+-   [**Architecture**](docs/architecture.html) - System design and data flow.
+-   [**API Reference**](docs/api.html) - REST API specification.
 
-## 📸 Screenshots
+## Quick Start
 
-*Coming soon - Glassmorphism interface with gradient backgrounds, blur effects, and smooth animations*
+### Download
+Download the latest binary from [Releases](https://github.com/RayCatcherS/Aviator/releases).
 
-## 🚀 Quick Start
+### Build from Source
+Requirements: Go 1.23+, Node.js 18+.
 
-### Prerequisites
-
-- Windows 10/11 (WebView2 included)
-- For development: Go 1.23+ and Node.js 18+
-
-### Installation
-
-**Option 1: Download Release** (Recommended)
-1. Download `aviator-wails.exe` from [Releases](https://github.com/RayCatcherS/Aviator/releases)
-2. Run the executable
-3. Add your favorite applications
-4. Scan the QR code from your phone!
-
-**Option 2: Build from Source**
 ```bash
-# Clone the repository
+# Clone
 git clone https://github.com/RayCatcherS/Aviator.git
 cd Aviator/aviator-wails
 
-# Install Wails CLI
+# Install Tools
 go install github.com/wailsapp/wails/v2/cmd/wails@latest
 
-# Build the application
+# Build
 wails build
-
-# Run
-./build/bin/aviator-wails.exe
 ```
 
-## 💡 Usage
+## Features
 
-### Desktop Interface
+-   **Remote Execution**: Launch executables via HTTP requests.
+-   **Process Monitoring**: Real-time status tracking of configured apps.
+-   **Security**: PIN-based authentication with HttpOnly cookies.
+-   **Cross-Device**: Responsive web dashboard for mobile control.
+-   **System Tray**: Background operation and quick server control.
 
-1. **Launch Aviator** - Double-click `aviator-wails.exe`
-2. **Add Applications** - Click "Add App" and select your .exe files
-3. **Configure** - Optionally add launch arguments
-4. **Monitor** - Check the status LED next to each app (Green = Running, Grey = Stopped)
-5. **Security** - Set your access PIN in the security settings (click the gear icon)
-6. **Access** - Use the displayed URLs or scan the QR code
+## Tech Stack
 
-### Mobile/Web Access
+-   **Backend**: Go (Wails bindings, `net/http` server).
+-   **Frontend (Desktop)**: Vue 3.
+-   **Frontend (Web)**: Vanilla JS + HTML (embedded).
+-   **Storage**: JSON-based configuration (`%LOCALAPPDATA%\Aviator`).
 
-1. **Same Network** - Ensure your phone/device is on the same WiFi
-2. **Scan QR Code** - Use your phone's camera to scan the QR code on the desktop app
-3. **Launch & Monitor** - Tap any app card to launch it and view its real-time status
-4. **Auto-Discovery** - The app announces itself via mDNS
-
-## 🏗️ Architecture
-
-```
-┌─────────────────────────────────────────┐
-│         Frontend (Vue 3 + CSS)          │
-│     Glassmorphism UI Components         │
-└──────────────┬──────────────────────────┘
-               │ Wails Bridge
-┌──────────────┴──────────────────────────┐
-│           Backend (Go)                   │
-├──────────────────────────────────────────┤
-│  • Config Manager (Thread-safe JSON)    │
-│  • HTTP Server (Secure REST API)        │
-│  • Auth Engine (Session Management)      │
-│  • Process Launcher (Detached exec)     │
-│  • mDNS Discovery (Network announce)    │
-└──────────────────────────────────────────┘
-```
-
-### Technology Stack
-
-- **Frontend**: Vue 3, Glassmorphism CSS, QRCode.js
-- **Backend**: Go 1.23, Wails v2
-- **Networking**: HTTP server, mDNS/Zeroconf
-- **Storage**: JSON configuration in `%LOCALAPPDATA%\Aviator\`
-
-## 📚 Documentation
-
-📖 **[Read the Full Documentation Online](https://RayCatcherS.github.io/Aviator/)**
-
-Explore the comprehensive guides hosting on GitHub Pages:
-
-- **[Overview](https://RayCatcherS.github.io/Aviator/)** - General introduction and features
-- **[User Guide](https://RayCatcherS.github.io/Aviator/user_guide.html)** - How to use Aviator
-- **[Architecture](https://RayCatcherS.github.io/Aviator/architecture.html)** - Technical overview
-- **[API Reference](https://RayCatcherS.github.io/Aviator/technical.html)** - REST API documentation
-
-*(Source files are available in the [`docs/`](docs/) directory)*
-
-## 🛠️ Development
-
-### Prerequisites
-
-```bash
-# Install Wails
-go install github.com/wailsapp/wails/v2/cmd/wails@latest
-
-# Verify installation
-wails doctor
-```
-
-### Development Mode
-
-```bash
-cd aviator-wails
-wails dev
-```
-
-This starts:
-- Backend Go server with hot reload
-- Frontend Vite dev server with HMR
-- Application window with developer tools
-
-### Project Structure
-
-```
-aviator-wails/
-├── app.go              # Wails bindings (Go ↔ JS)
-├── main.go             # Entry point
-├── internal/           # Backend modules
-│   ├── config/         # Configuration management
-│   ├── server/         # HTTP server + API
-│   ├── launcher/       # Process execution
-│   ├── discovery/      # mDNS service
-│   └── web/            # Embedded static files
-├── frontend/           # Vue 3 application
-│   ├── src/
-│   │   ├── App.vue     # Main component
-│   │   └── style.css   # Glassmorphism design system
-│   └── wailsjs/        # Auto-generated bindings
-└── build/              # Build output
-    └── bin/
-        └── aviator-wails.exe
-```
-
-### Building
-
-```bash
-# Production build
-wails build
-
-# Clean build
-wails build -clean
-
-# With custom flags
-wails build -ldflags "-w -s"
-```
-
-⚠️ **Important**: Never use `go build` directly. Always use `wails build` to ensure proper build tags.
-
-## 🔧 Configuration
-
-Configuration is stored in: `%LOCALAPPDATA%\Aviator\config.json`
-
-```json
-[
-  {
-    "id": "unique-uuid",
-    "name": "My Application",
-    "path": "C:\\path\\to\\app.exe",
-    "args": "--flag value"
-  }
-]
-```
-
-## 🌐 API Endpoints
-
-When the server is running on port 8000:
-
-- `GET /` - Web interface (glassmorphism UI)
-- `GET /api/apps` - List configured applications
-- `POST /api/launch/{id}` - Launch an application
-- `GET /api/monitoring/status` - Get real-time process statuses
-- `GET /api/info` - Server information
-
-## 🤝 Contributing
-
-Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) first.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- [Wails](https://wails.io) - Amazing Go + Web framework
-- [Vue.js](https://vuejs.org) - Progressive JavaScript framework
-- [Glassmorphism](https://uxdesign.cc/glassmorphism-in-user-interfaces-1f39bb1308c9) - Design trend inspiration
-- [Zeroconf](https://github.com/grandcat/zeroconf) - mDNS library
-
-## 🐛 Known Issues
-
-- **WebView2 Required**: Windows 10/11 include WebView2 by default. Older systems may need manual installation.
-- **Firewall**: Windows Firewall may prompt for network access on first run.
-- **Arguments Parsing**: Complex arguments with quotes may need escaping.
-
-## 🗺️ Roadmap
-
-### **v2.1 - Security & Power Controls**
-- [x] **🔐 PIN Authentication** - Protect remote access with a passcode (v2.4)
-- [ ] **⚡ System Power Controls** - Sleep, Shutdown, and Restart PC remotely
-- [ ] **🔊 Volume Control** - Adjust system volume from the web dashboard
-
-### v2.7.1 (Current)
-- [x] **🛡️ PIN Authentication** - Secure your dashboard with a personal 6-digit PIN.
-- [x] **💎 Glassmorphism UI** - Professional, modern interface with interactive SVG icons.
-- [x] **📱 Remote Launching** - Launch applications on your PC from any mobile device on the same network.
-
-### v2.2 - Organization & Customization (Planned)
-- [ ] **🏪 Microsoft Store Apps** - Support for launching UWP apps (Netflix, Spotify) via AUMID
-- [ ] **📂 Categories** - Group apps (e.g., "Games", "Work") with filters
-- [ ] **🎨 Advanced Themes** - Multiple color schemes (Cyberpunk, Minimal, Matrix)
-
-### **v2.3 - Advanced Features**
-- [ ] **📱 PWA Support** - Install web dashboard as a native app on mobile
-- [ ] **📊 Usage Statistics** - Track launch counts and usage metrics
-- [ ] **🐧 Cross-Platform Core** - Expand support to macOS and Linux
-## 📧 Contact
-
-- **Author**: RayCatcherS
-- **Project Link**: https://github.com/RayCatcherS/Aviator
-
----
-
-<p align="center">Made with ❤️ and Glassmorphism</p>
+## License
+MIT License.

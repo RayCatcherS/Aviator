@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aviator - API Reference</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="style.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body class="min-h-screen flex">
+
+    <!-- Sidebar -->
+    <aside class="w-64 fixed h-full overflow-y-auto z-20">
+        <div class="p-6 mb-4 text-center">
+            <a href="index.html" class="block hover:opacity-80 transition-opacity">
+                <h2
+                    class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 tracking-widest uppercase mb-1">
+                    Aviator</h2>
+                <p class="text-xs text-slate-500 font-mono">DOCS v2.4</p>
+            </a>
+        </div>
+        <nav class="px-4 space-y-1">
+            <a href="index.html" class="sidebar-link">Overview</a>
+            <a href="manual.html" class="sidebar-link">User Manual</a>
+            <a href="architecture.html" class="sidebar-link">Architecture</a>
+            <a href="api.html" class="sidebar-link active">API Reference</a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="ml-64 p-12 w-full">
+        <header class="mb-12">
+            <h1>API Reference</h1>
+        </header>
+
+        <section class="space-y-12">
+
+            <!-- Intro -->
+            <div>
+                <p>The Aviator internal server runs on port <code>8000</code> by default.</p>
+            </div>
+
+            <!-- Authentication -->
+            <div>
+                <h2>Authentication</h2>
+                <div class="card border-l-4 border-l-yellow-500">
+                    <p class="text-slate-300">If enabled, all API endpoints (except <code>/api/info</code> and
+                        <code>/api/auth</code>) require a valid session.</p>
+                    <ul class="list-disc list-inside space-y-1 text-slate-400 mt-2">
+                        <li><strong>Method</strong>: HttpOnly Cookie (<code>aviator_key</code>)</li>
+                        <li><strong>Session Duration</strong>: 24 hours</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Endpoints -->
+            <div>
+                <h2>Endpoints</h2>
+
+                <!-- /api/info -->
+                <div class="card space-y-4">
+                    <div class="flex items-center gap-3">
+                        <span class="bg-blue-600 text-white px-2 py-1 rounded text-xs font-bold font-mono">GET</span>
+                        <code class="text-lg text-cyan-400">/api/info</code>
+                    </div>
+                    <p class="text-slate-400 text-sm">Returns server status and authentication requirements. Does not
+                        require authentication.</p>
+
+                    <div class="bg-slate-900 p-4 rounded-lg border border-slate-700">
+                        <p class="text-xs text-slate-500 mb-2 font-bold uppercase">Response</p>
+                        <pre class="text-sm text-green-400 font-mono whitespace-pre-wrap">{
+  "status": "running",
+  "version": "v2.8.2",
+  "hostname": "DESKTOP-XXXX",
+  "auth_required": true,
+  "is_authorized": false
+}</pre>
+                    </div>
+                </div>
+
+                <!-- /api/auth -->
+                <div class="card space-y-4">
+                    <div class="flex items-center gap-3">
+                        <span class="bg-green-600 text-white px-2 py-1 rounded text-xs font-bold font-mono">POST</span>
+                        <code class="text-lg text-cyan-400">/api/auth</code>
+                    </div>
+                    <p class="text-slate-400 text-sm">Validates PIN and sets the session cookie.</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-slate-900 p-4 rounded-lg border border-slate-700">
+                            <p class="text-xs text-slate-500 mb-2 font-bold uppercase">Request Body</p>
+                            <pre class="text-sm text-yellow-200 font-mono">{ "pin": "123456" }</pre>
+                        </div>
+                        <div class="bg-slate-900 p-4 rounded-lg border border-slate-700">
+                            <p class="text-xs text-slate-500 mb-2 font-bold uppercase">Response</p>
+                            <pre class="text-sm text-green-400 font-mono">200 OK</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- /api/apps -->
+                <div class="card space-y-4">
+                    <div class="flex items-center gap-3">
+                        <span class="bg-blue-600 text-white px-2 py-1 rounded text-xs font-bold font-mono">GET</span>
+                        <code class="text-lg text-cyan-400">/api/apps</code>
+                    </div>
+                    <p class="text-slate-400 text-sm">Lists all configured applications.</p>
+
+                    <div class="bg-slate-900 p-4 rounded-lg border border-slate-700">
+                        <p class="text-xs text-slate-500 mb-2 font-bold uppercase">Response</p>
+                        <pre class="text-sm text-green-400 font-mono whitespace-pre-wrap">[
+  {
+    "id": "uuid...",
+    "name": "Firefox",
+    "path": "C:\\Program Files\\...",
+    "icon": "base64..."
+  }
+]</pre>
+                    </div>
+                </div>
+
+                <!-- /api/launch -->
+                <div class="card space-y-4">
+                    <div class="flex items-center gap-3">
+                        <span class="bg-green-600 text-white px-2 py-1 rounded text-xs font-bold font-mono">POST</span>
+                        <code class="text-lg text-cyan-400">/api/launch/{id}</code>
+                    </div>
+                    <p class="text-slate-400 text-sm">Launches the specified application on the host machine.</p>
+
+                    <div class="bg-slate-900 p-4 rounded-lg border border-slate-700">
+                        <p class="text-xs text-slate-500 mb-2 font-bold uppercase">Response</p>
+                        <pre class="text-sm text-green-400 font-mono">{
+  "status": "success",
+  "pid": 1234
+}</pre>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>
