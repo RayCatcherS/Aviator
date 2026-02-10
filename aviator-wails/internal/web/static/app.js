@@ -1,4 +1,5 @@
-const API_BASE = ""; // Relative path since we are served by the same server
+const API_BASE = "";
+// console.log("Aviator Web App: v2.4 Loaded");
 
 // Logic involved in sticky header
 window.addEventListener('scroll', () => {
@@ -19,6 +20,9 @@ function setView(mode) {
     const gridEl = document.getElementById('app-grid');
     const btnGrid = document.getElementById('btn-grid');
     const btnList = document.getElementById('btn-list');
+
+    if (btnGrid) btnGrid.blur();
+    if (btnList) btnList.blur();
 
     if (mode === 'list') {
         gridEl.classList.add('list-view');
@@ -46,20 +50,127 @@ let currentHostname = '...';
 
 async function fetchInfo() {
     try {
-        // Add timestamp to prevent caching
         const response = await fetch(`${API_BASE}/api/info?t=${new Date().getTime()}`);
         if (!response.ok) throw new Error(`Server returned ${response.status}`);
 
         const data = await response.json();
         currentHostname = data.hostname;
+
+        // Update version display if element exists
+        const versionEl = document.getElementById('web-version');
+        if (versionEl && data.version) {
+            versionEl.innerText = data.version;
+        }
+
+        if (data.auth_required && !data.is_authorized) {
+            showAuthModal();
+            document.getElementById('header-controls').classList.add('hidden');
+            document.getElementById('view-section').classList.add('hidden');
+        } else {
+            hideAuthModal();
+            document.getElementById('header-controls').classList.remove('hidden');
+            document.getElementById('view-section').classList.remove('hidden');
+        }
+
         updateServerStatus(true);
-        return true;
+        return data.is_authorized || !data.auth_required;
     } catch (e) {
         console.error('Failed to fetch server info:', e);
         updateServerStatus(false);
         return false;
     }
 }
+
+function showAuthModal() {
+    console.log("Displaying PIN Modal...");
+    const modal = document.getElementById('login-overlay');
+    if (modal) {
+        modal.classList.remove('hidden');
+        // Usiamo un timeout per il focus su mobile
+        setTimeout(() => document.getElementById('pin-input').focus(), 100);
+    } else {
+        console.error("CRITICAL: login-overlay element NOT FOUND in DOM!");
+    }
+}
+
+function hideAuthModal() {
+    document.getElementById('login-overlay').classList.add('hidden');
+}
+
+async function handleLogin() {
+    const pin = document.getElementById('pin-input').value;
+    const btn = document.getElementById('btn-login');
+    const err = document.getElementById('login-error');
+
+    btn.disabled = true;
+    err.classList.add('opacity-0');
+
+    try {
+        const response = await fetch(`${API_BASE}/api/auth`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ pin })
+        });
+
+        if (response.ok) {
+            hideAuthModal();
+            await fetchInfo(); // Update header controls
+            await fetchApps();
+            startPolling();
+            showToast('✅ Authorization successful!', 2000);
+        } else {
+            err.classList.remove('opacity-0');
+            document.getElementById('pin-input').value = '';
+            document.getElementById('pin-input').focus();
+        }
+    } catch (e) {
+        showToast('❌ Auth server error', 3000);
+    } finally {
+        btn.disabled = false;
+    }
+}
+
+async function handleLogout() {
+    try {
+        await fetch(`${API_BASE}/api/logout`, { method: 'POST' });
+        showToast('👋 Logged out');
+        location.reload(); // Refresh to trigger auth check
+    } catch (e) {
+        showToast('❌ Logout error');
+    }
+}
+
+function toggleSettingsMenu(event) {
+    event.stopPropagation();
+    const menu = document.getElementById('settings-menu');
+    const btn = document.getElementById('btn-settings');
+    const isHidden = menu.classList.toggle('hidden');
+
+    // Toggle visual state on button
+    if (!isHidden) {
+        btn.classList.add('active-cyan');
+    } else {
+        btn.classList.remove('active-cyan');
+        btn.blur();
+    }
+}
+
+function closeSettingsMenu() {
+    const menu = document.getElementById('settings-menu');
+    const btn = document.getElementById('btn-settings');
+    if (menu && !menu.classList.contains('hidden')) {
+        menu.classList.add('hidden');
+        if (btn) {
+            btn.classList.remove('active-cyan');
+            btn.blur();
+        }
+    }
+}
+
+// Close menu on click outside
+window.addEventListener('click', () => {
+    closeSettingsMenu();
+});
 
 function updateServerStatus(online) {
     const wasOffline = !serverOnline;
@@ -76,14 +187,13 @@ function updateServerStatus(online) {
         dot.className = 'w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse';
         statusText.innerHTML = `Connected to <span id="hostname" class="font-bold ml-1">${currentHostname}</span>`;
         if (offlineBanner) offlineBanner.classList.add('hidden');
-        if (viewControls) viewControls.style.display = ''; // Restore default display
+        document.getElementById('view-section').classList.remove('hidden');
 
         // If was offline, restart polling and reload apps
         if (wasOffline) {
             showToast('✅ Server reconnected!', 3000);
             startPolling();
             fetchApps();
-            connectWebSocket();
         }
     } else {
         // Server offline - red badge
@@ -91,7 +201,10 @@ function updateServerStatus(online) {
         dot.className = 'w-2 h-2 rounded-full bg-red-500 mr-2';
         statusText.innerHTML = 'Server Not Available';
         if (offlineBanner) offlineBanner.classList.remove('hidden');
-        if (viewControls) viewControls.style.display = 'none';
+        document.getElementById('view-section').classList.add('hidden');
+
+        // Close any open modals on disconnect
+        closeAppDetails();
 
         // Clear apps grid when offline (completely remove content)
         grid.innerHTML = '';
@@ -180,12 +293,12 @@ async function retryConnection() {
 
 
 async function fetchProcessStatuses() {
-    if (!serverOnline) return; // Skip if server is offline
+    if (!serverOnline) return;
 
     try {
         const response = await fetch(`${API_BASE}/api/process-statuses`);
         if (!response.ok) {
-            updateServerStatus(false);
+            if (response.status !== 401) updateServerStatus(false);
             return;
         }
         const data = await response.json();
@@ -194,7 +307,7 @@ async function fetchProcessStatuses() {
         updateServerStatus(true);
     } catch (e) {
         console.error('Failed to fetch process statuses:', e);
-        updateServerStatus(false);
+        if (e.message !== 'Unauthorized') updateServerStatus(false);
     }
 }
 
@@ -211,16 +324,20 @@ function updateStatusIndicators() {
             }
         }
     });
+    updateModalStatus();
 }
 
 async function fetchApps() {
     try {
         const response = await fetch(`${API_BASE}/api/apps`);
+        if (!response.ok) return;
         const apps = await response.json();
         renderGrid(apps);
     } catch (e) {
         console.error("Failed to fetch apps", e);
-        grid.innerHTML = `<div class="col-span-full text-center text-red-400">Error connecting to server.</div>`;
+        if (e.message !== 'Unauthorized') {
+            grid.innerHTML = `<div class="col-span-full text-center text-red-400">Error connecting to server.</div>`;
+        }
     }
 }
 
@@ -239,30 +356,32 @@ function renderGrid(apps) {
 
     apps.forEach(app => {
         const card = document.createElement('button');
-        card.className = "glass-card rounded-2xl p-6 flex flex-col items-center justify-center group cursor-pointer text-left w-full h-full";
+        card.className = "glass-card glass-interactive rounded-2xl p-4 flex flex-col items-center justify-center group cursor-pointer text-left w-full h-full border border-white/5";
         card.setAttribute('data-app-id', app.id);
-        card.onclick = () => launchApp(app.id, app.name);
+        card.onclick = (e) => {
+            e.currentTarget.blur();
+            openAppDetails(app);
+        };
 
         // Use app icon if available, otherwise use gradient fallback
         let iconHTML;
         if (app.icon) {
-            iconHTML = `<img src="data:image/png;base64,${app.icon}" class="w-16 h-16 rounded-2xl shadow-lg mb-4 group-hover:scale-110 transition-transform duration-300 object-contain" alt="${app.name} icon">`;
+            iconHTML = `<img src="data:image/png;base64,${app.icon}" class="app-icon w-12 h-12 rounded-xl shadow-lg mb-3 group-hover:scale-110 transition-transform duration-300 object-contain" alt="${app.name} icon">`;
         } else {
-            // Fallback: Generate a random gradient based on name char code
             const hue = app.name.charCodeAt(0) * 10 % 360;
-            iconHTML = `<div class="app-icon w-16 h-16 rounded-2xl bg-gradient-to-br from-[hsl(${hue},70%,50%)] to-[hsl(${hue + 40},70%,30%)] shadow-lg mb-4 flex items-center justify-center text-2xl font-bold text-white group-hover:scale-110 transition-transform duration-300">
+            iconHTML = `<div class="app-icon w-12 h-12 rounded-xl bg-gradient-to-br from-[hsl(${hue},70%,50%)] to-[hsl(${hue + 40},70%,30%)] shadow-lg mb-3 flex items-center justify-center text-xl font-bold text-white group-hover:scale-110 transition-transform duration-300">
                 ${app.name.substring(0, 2).toUpperCase()}
             </div>`;
         }
 
         card.innerHTML = `
             ${iconHTML}
-            <div class="flex flex-col items-center">
-                <div class="flex items-center gap-2 mb-1">
+            <div class="app-info flex flex-col items-center gap-1">
+                <div class="flex items-center gap-3">
                     <div class="status-led ${processStatuses[app.id] ? 'led-running' : ''}" title="${processStatuses[app.id] ? 'Running' : 'Stopped'}"></div>
-                    <h3 class="text-lg font-semibold text-slate-100 group-hover:text-cyan-400 transition-colors">${app.name}</h3>
+                    <h3 class="text-base font-semibold text-slate-100 group-hover:text-cyan-400 transition-colors truncate max-w-[120px]">${app.name}</h3>
                 </div>
-                <span class="launch-text text-xs text-slate-500 mt-1 truncate max-w-full opacity-60">Click to Launch</span>
+                <span class="launch-text text-[10px] text-slate-500 font-medium tracking-wider uppercase opacity-40 group-hover:opacity-100 transition-opacity">Launch App</span>
             </div>
         `;
         grid.appendChild(card);
@@ -275,12 +394,69 @@ async function launchApp(id, name) {
         const response = await fetch(`${API_BASE}/api/launch/${id}`, { method: 'POST' });
         if (response.ok) {
             showToast(`${name} launched successfully!`, 3000);
-        } else {
+        } else if (response.status !== 401) {
             const err = await response.json();
-            showToast(`Error: ${err.detail}`, 4000);
+            showToast(`Error: ${err.detail || 'Internal error'}`, 4000);
         }
     } catch (e) {
-        showToast(`Network Error`, 3000);
+        if (e.message !== 'Unauthorized') showToast(`Network Error`, 3000);
+    }
+}
+
+let currentlySelectedApp = null;
+
+function openAppDetails(app) {
+    currentlySelectedApp = app;
+    const modal = document.getElementById('app-details-overlay');
+    const iconContainer = document.getElementById('modal-app-icon');
+    const nameContainer = document.getElementById('modal-app-name');
+    const launchBtn = document.getElementById('modal-launch-btn');
+
+    // Populate Data
+    nameContainer.innerText = app.name;
+
+    // Icon
+    if (app.icon) {
+        iconContainer.innerHTML = `<img src="data:image/png;base64,${app.icon}" class="w-full h-full object-contain">`;
+    } else {
+        const hue = app.name.charCodeAt(0) * 10 % 360;
+        iconContainer.innerHTML = `<div class="w-full h-full bg-gradient-to-br from-[hsl(${hue},70%,50%)] to-[hsl(${hue + 40},70%,30%)] flex items-center justify-center text-3xl font-bold text-white uppercase">${app.name.substring(0, 2)}</div>`;
+    }
+
+    // Set Launch Handlers
+    launchBtn.onclick = () => {
+        launchApp(app.id, app.name);
+        // Optional: closeAppDetails();
+    };
+
+    updateModalStatus();
+    modal.classList.remove('hidden');
+}
+
+function closeAppDetails() {
+    const modal = document.getElementById('app-details-overlay');
+    modal.classList.add('hidden');
+    currentlySelectedApp = null;
+}
+
+function updateModalStatus() {
+    if (!currentlySelectedApp) return;
+
+    const led = document.getElementById('modal-status-led');
+    const text = document.getElementById('modal-status-text');
+    const badge = document.getElementById('modal-app-status-badge');
+    const isRunning = processStatuses[currentlySelectedApp.id];
+
+    if (isRunning) {
+        led.className = 'w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]';
+        text.innerText = 'Running';
+        text.className = 'text-xs font-semibold tracking-widest uppercase text-green-400';
+        badge.className = 'inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-green-500/10 border border-green-500/20 mb-8';
+    } else {
+        led.className = 'w-2 h-2 rounded-full bg-slate-500';
+        text.innerText = 'Stopped';
+        text.className = 'text-xs font-semibold tracking-widest uppercase text-slate-400';
+        badge.className = 'inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/5 mb-8';
     }
 }
 
@@ -295,51 +471,25 @@ function showToast(msg, duration = 2000) {
     }, duration);
 }
 
-// Initial Load
-fetchInfo();
-fetchApps();
-
-// Start polling
-startPolling();
-
-// Setup WebSocket for real-time updates
-const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-// If API_BASE is set (remote), use that host, otherwise use window.location
-const wsHost = API_BASE ? API_BASE.replace('http', 'ws') : `${protocol}//${window.location.host}`;
-const wsUrl = `${wsHost}/ws`;
-let wsClient = null;
-
-function connectWebSocket() {
-    if (!serverOnline) return;
-    if (wsClient && wsClient.readyState === WebSocket.OPEN) return;
+// Initial Load sequence
+async function init() {
+    grid.innerHTML = '<div class="col-span-full text-center py-20 text-cyan-400 animate-pulse">Connecting...</div>';
 
     try {
-        wsClient = new WebSocket(wsUrl);
+        const isAuthorized = await fetchInfo();
 
-        wsClient.onopen = () => {
-            console.log("Connected to Real-time updates");
-        };
-
-        wsClient.onmessage = (event) => {
-            console.log("Update received:", event.data);
-            fetchApps();
-            // showToast("App list updated", 2000);
-        };
-
-        wsClient.onclose = () => {
-            console.log("Socket disconnected");
-            wsClient = null;
-        };
-
-        wsClient.onerror = (err) => {
-            console.error("Socket error", err);
-            if (wsClient) wsClient.close();
-            wsClient = null;
-        };
-    } catch (e) {
-        console.error("Failed to connect websocket", e);
+        if (isAuthorized) {
+            await fetchApps();
+            startPolling();
+        } else {
+            grid.innerHTML = '<div class="col-span-full text-center py-20 text-slate-500">Authorization required. Please enter PIN.</div>';
+        }
+    } catch (err) {
+        console.error("Aviator Initialization Failed:", err);
+        grid.innerHTML = `<div class="col-span-full text-center py-20 text-red-400">Connection Failed: ${err.message}</div>`;
     }
 }
 
-// Initial connection attempt
-if (serverOnline) connectWebSocket();
+init();
+
+

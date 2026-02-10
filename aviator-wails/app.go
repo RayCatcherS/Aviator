@@ -136,6 +136,11 @@ func (a *App) LaunchApp(id string) error {
 	return nil
 }
 
+// GetVersion returns the application version
+func (a *App) GetVersion() string {
+	return AppVersion
+}
+
 // GetServerInfo returns server status information
 func (a *App) GetServerInfo() map[string]interface{} {
 	localIP := getOutboundIP()
@@ -312,6 +317,11 @@ func (a *App) GetSettings() config.Settings {
 // UpdateSettings saves new settings
 func (a *App) UpdateSettings(s config.Settings) error {
 	return a.config.UpdateSettings(s)
+}
+
+// SetWebPIN sets a new PIN for web access
+func (a *App) SetWebPIN(pin string) error {
+	return a.config.SetWebPIN(pin)
 }
 
 // Helper function to get outbound IP

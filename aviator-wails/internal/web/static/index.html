@@ -4,6 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Aviator Control Deck</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="styles.css" rel="stylesheet">
@@ -44,15 +47,44 @@
     </div>
 
     <main class="w-full max-w-4xl p-6 relative z-10 transition-all duration-300">
-        <header id="main-header">
+        <header id="main-header" class="relative pt-10 pb-12">
+            <!-- Settings Gear (Top Right) -->
+            <div id="header-controls" class="header-controls hidden absolute top-4 right-4 z-50">
+                <div class="relative">
+                    <button onclick="toggleSettingsMenu(event)" id="btn-settings"
+                        class="p-2.5 rounded-full bg-white/5 backdrop-blur-md border border-white/5 text-slate-300 hover:text-cyan-400 hover:bg-white/10 transition-all active:scale-95"
+                        title="Settings">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path
+                                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                        </svg>
+                    </button>
+
+                    <div id="settings-menu" onclick="event.stopPropagation()"
+                        class="hidden absolute right-0 mt-3 w-48 glass-card rounded-2xl border border-white/10 shadow-2xl py-2 z-50 animate-fade-in-down origin-top-right backdrop-blur-xl bg-slate-900/90 overflow-hidden">
+                        <button onclick="handleLogout()"
+                            class="w-full text-left px-5 py-4 text-sm text-red-400 hover:bg-red-500/10 flex items-center gap-3 transition-colors active:bg-red-500/20">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                            </svg>
+                            Log Out
+                        </button>
+                    </div>
+                </div>
+            </div>
             <!-- Main Content Container -->
             <div class="header-content w-full">
                 <h1 class="logo-large font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-500 drop-shadow-lg text-center"
-                    style="font-size: 4rem;">
+                    style="font-size: 3.5rem;">
                     Aviator
                 </h1>
 
-                <p class="subtitle text-slate-400 text-lg font-light tracking-wide text-center">Local Network Launchpad
+                <p class="subtitle text-slate-400 text-xs font-light tracking-[0.3em] uppercase text-center opacity-70">
+                    Local Launchpad
                 </p>
 
                 <div id="status-indicator" class="status-badge mt-4 flex justify-center w-full">
@@ -65,37 +97,45 @@
                 </div>
             </div>
 
-            <!-- Controls (Sibling to header-content) -->
-            <div class="header-controls">
-                <div class="view-controls">
-                    <button onclick="setView('grid')" id="btn-grid"
-                        class="p-2 rounded hover:bg-slate-700/50 text-cyan-400 transition-colors" title="Grid View">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-                        </svg>
-                    </button>
-                    <button onclick="setView('list')" id="btn-list"
-                        class="p-2 rounded hover:bg-slate-700/50 text-slate-500 transition-colors" title="List View">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
+
         </header>
+
+        <!-- View Selection & Spacing -->
+        <div id="view-section" class="flex justify-center mb-10 hidden transition-opacity duration-500">
+            <div
+                class="view-controls flex items-center gap-1 bg-white/5 backdrop-blur-md rounded-full p-1.5 border border-white/5 shadow-xl">
+                <button onclick="setView('grid')" id="btn-grid"
+                    class="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-white/10 text-cyan-400 transition-all font-medium text-sm"
+                    title="Grid View">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                    </svg>
+                    Grid
+                </button>
+                <button onclick="setView('list')" id="btn-list"
+                    class="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-white/10 text-slate-500 transition-all font-medium text-sm"
+                    title="List View">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                    List
+                </button>
+            </div>
+        </div>
 
         <!-- Offline Warning Banner -->
         <div id="offline-banner"
             class="hidden mt-6 p-4 rounded-xl bg-red-500/10 border border-red-500/30 backdrop-blur-sm">
             <div class="flex items-center justify-between gap-3">
                 <div class="flex items-center gap-3 text-red-400">
-                    <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                     </svg>
                     <div>
                         <p class="font-semibold">Server Offline</p>
@@ -104,7 +144,7 @@
                     </div>
                 </div>
                 <button id="btn-retry" onclick="retryConnection()"
-                    class="px-4 py-2 rounded-lg bg-red-500/20 hover:bg-red-500/30 border border-red-400/50 text-red-300 font-semibold transition-all flex items-center gap-2 whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed">
+                    class="glass-button danger py-2 px-4 flex items-center gap-2 whitespace-nowrap">
                     <svg id="retry-icon" class="w-4 h-4 transition-transform duration-700" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -119,7 +159,7 @@
         <div id="app-grid" class="grid grid-cols-2 md:grid-cols-3 gap-6">
             <!-- Items will be injected here via JS -->
             <div class="col-span-full text-center py-20 text-slate-500 animate-pulse">
-                Loading applications...
+                [SYSTEM] Loading Interface...
             </div>
         </div>
 
@@ -130,11 +170,72 @@
         </div>
     </main>
 
-    <footer class="w-full text-center text-slate-600 text-xs py-6 mt-auto">
-        &copy; 2026 WebAppAviator. Running locally.
+    <!-- Login Overlay -->
+    <div id="login-overlay"
+        class="fixed inset-0 z-[100] bg-slate-900/40 backdrop-blur-xl flex items-center justify-center hidden">
+        <div class="glass-card p-10 rounded-3xl w-full max-w-sm m-4 shadow-2xl border border-white/10 text-center">
+            <h2
+                class="text-3xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-500">
+                Safe Entry
+            </h2>
+            <p class="text-slate-400 text-sm mb-8">Enter your security PIN to access the deck</p>
+
+            <div class="space-y-4 flex flex-col items-center">
+                <input type="password" id="pin-input" maxlength="6" inputmode="numeric"
+                    onkeyup="if(event.key==='Enter')handleLogin()"
+                    class="w-full max-w-[220px] bg-slate-800/50 border border-white/10 rounded-2xl p-4 text-center text-xl tracking-[0.5em] focus:outline-none focus:border-cyan-500/50 transition-all font-mono"
+                    placeholder="••••">
+                <button onclick="handleLogin()" id="btn-login"
+                    class="w-full max-w-[220px] glass-button primary py-4 font-bold rounded-2xl shadow-lg">
+                    Authorize Access
+                </button>
+            </div>
+            <p id="login-error" class="text-red-400 text-sm mt-4 opacity-0 transition-opacity">Invalid PIN. Please try
+                again.</p>
+        </div>
+    </div>
+
+    <!-- App Details Overlay -->
+    <div id="app-details-overlay"
+        class="fixed inset-0 z-[100] bg-slate-900/40 backdrop-blur-xl flex items-center justify-center hidden"
+        onclick="closeAppDetails()">
+        <div class="glass-card p-10 rounded-3xl w-full max-w-sm m-4 shadow-2xl border border-white/10 text-center animate-fade-in-up"
+            onclick="event.stopPropagation()">
+            <div id="modal-app-icon"
+                class="w-24 h-24 mx-auto mb-6 flex items-center justify-center rounded-3xl bg-white/5 border border-white/10 shadow-xl overflow-hidden">
+                <!-- Icon injected here -->
+            </div>
+            <h2 id="modal-app-name" class="text-3xl font-bold mb-2 text-white">
+                App Name
+            </h2>
+            <div id="modal-app-status-badge"
+                class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/5 mb-8">
+                <div id="modal-status-led" class="w-2 h-2 rounded-full bg-slate-500"></div>
+                <span id="modal-status-text"
+                    class="text-xs font-semibold tracking-widest uppercase text-slate-400">Stopped</span>
+            </div>
+
+            <div class="space-y-4">
+                <button id="modal-launch-btn"
+                    class="w-full glass-button primary font-bold py-4 rounded-2xl shadow-lg flex items-center justify-center gap-3">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    Launch App
+                </button>
+                <button onclick="closeAppDetails()" class="w-full glass-button ghost font-semibold py-4 rounded-2xl">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="w-full text-center text-slate-600 text-[10px] py-6 mt-auto font-mono tracking-widest uppercase">
+        &copy; 2026 Aviator <span id="web-version">v2.8.2</span>
     </footer>
 
-    <script src="app.js"></script>
+    <script src="app.js?v=2.8.2"></script>
 </body>
 
 </html>

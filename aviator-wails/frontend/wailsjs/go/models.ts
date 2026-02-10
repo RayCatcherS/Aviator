@@ -22,6 +22,8 @@ export namespace config {
 	}
 	export class Settings {
 	    auto_start: boolean;
+	    auth_enabled: boolean;
+	    web_pin_hash: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new Settings(source);
@@ -30,6 +32,8 @@ export namespace config {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.auto_start = source["auto_start"];
+	        this.auth_enabled = source["auth_enabled"];
+	        this.web_pin_hash = source["web_pin_hash"];
 	    }
 	}
 

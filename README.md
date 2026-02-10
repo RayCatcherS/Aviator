@@ -4,7 +4,7 @@
 
 Launch your Windows applications remotely from any device on your local network with a beautiful, modern interface powered by Wails.
 
-![Version](https://img.shields.io/badge/version-2.0.0-blue)
+![Version](https://img.shields.io/badge/version-2.4.0-blue)
 [![Docs](https://img.shields.io/badge/docs-online-green)](https://RayCatcherS.github.io/Aviator/)
 ![Wails](https://img.shields.io/badge/Wails-v2.11.0-00ACD7)
 ![Vue](https://img.shields.io/badge/Vue-3-42b883)
@@ -14,6 +14,8 @@ Launch your Windows applications remotely from any device on your local network 
 
 - 🎨 **Glassmorphism UI** - Modern, premium interface with blur effects and smooth animations
 - 📱 **Mobile Access** - Control your PC applications from your phone or tablet
+- 🔒 **Secure Auth** - PIN-protected remote access with visibility toggle and HttpOnly session cookies
+- ⚙️ **Customizable Security** - Set and modify your 6-digit access PIN directly from the desktop settings
 - 🔍 **Auto-Discovery** - Zero-configuration setup with mDNS (scan QR code and go)
 - ⚡ **Fast & Lightweight** - Native performance with small footprint (~12 MB)
 - 🌐 **Cross-Platform Ready** - Built with Wails (Windows, macOS, Linux support)
@@ -64,7 +66,8 @@ wails build
 2. **Add Applications** - Click "Add App" and select your .exe files
 3. **Configure** - Optionally add launch arguments
 4. **Monitor** - Check the status LED next to each app (Green = Running, Grey = Stopped)
-5. **Access** - Use the displayed URLs or scan the QR code
+5. **Security** - Set your access PIN in the security settings (click the gear icon)
+6. **Access** - Use the displayed URLs or scan the QR code
 
 ### Mobile/Web Access
 
@@ -84,8 +87,9 @@ wails build
 ┌──────────────┴──────────────────────────┐
 │           Backend (Go)                   │
 ├──────────────────────────────────────────┤
-│  • Config Manager (JSON persistence)    │
-│  • HTTP Server (REST API + Static)      │
+│  • Config Manager (Thread-safe JSON)    │
+│  • HTTP Server (Secure REST API)        │
+│  • Auth Engine (Session Management)      │
 │  • Process Launcher (Detached exec)     │
 │  • mDNS Discovery (Network announce)    │
 └──────────────────────────────────────────┘
@@ -227,11 +231,16 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🗺️ Roadmap
 
 ### **v2.1 - Security & Power Controls**
-- [ ] **🔐 PIN Authentication** - Protect remote access with a passcode
+- [x] **🔐 PIN Authentication** - Protect remote access with a passcode (v2.4)
 - [ ] **⚡ System Power Controls** - Sleep, Shutdown, and Restart PC remotely
 - [ ] **🔊 Volume Control** - Adjust system volume from the web dashboard
 
-### **v2.2 - Organization & Customization**
+### v2.7.1 (Current)
+- [x] **🛡️ PIN Authentication** - Secure your dashboard with a personal 6-digit PIN.
+- [x] **💎 Glassmorphism UI** - Professional, modern interface with interactive SVG icons.
+- [x] **📱 Remote Launching** - Launch applications on your PC from any mobile device on the same network.
+
+### v2.2 - Organization & Customization (Planned)
 - [ ] **🏪 Microsoft Store Apps** - Support for launching UWP apps (Netflix, Spotify) via AUMID
 - [ ] **📂 Categories** - Group apps (e.g., "Games", "Work") with filters
 - [ ] **🎨 Advanced Themes** - Multiple color schemes (Cyberpunk, Minimal, Matrix)

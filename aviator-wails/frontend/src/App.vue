@@ -55,7 +55,8 @@
                 class="glass-button success flex-none flex items-center justify-center gap-2"
                 :class="{ 'opacity-50 cursor-not-allowed': serverInfo.running }"
               >
-                <span class="text-lg">▶️</span> Start Server
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                Start Server
               </button>
               <button 
                 @click="stopServer"
@@ -63,7 +64,8 @@
                 class="glass-button flex-none flex items-center justify-center gap-2 border-red-500/40 text-red-100 hover:bg-red-500/20"
                 :class="{ 'opacity-50 cursor-not-allowed': !serverInfo.running }"
               >
-                <span class="text-lg">⏹️</span> Stop Server
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect></svg>
+                Stop Server
               </button>
             </div>
             
@@ -87,8 +89,11 @@
             <canvas ref="qrCanvas" class="block w-[140px] h-[140px]"></canvas>
           </div>
           <div v-else class="glass-card w-[172px] h-[172px] flex flex-col items-center justify-center gap-2 opacity-30 flex-shrink-0">
-            <div class="text-5xl">🔒</div>
-            <div class="text-xs font-medium">Server Offline</div>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-slate-500/50">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            <div class="text-xs font-semibold uppercase tracking-widest text-slate-500 mt-2">Server Offline</div>
           </div>
         </div>
       </div>
@@ -98,7 +103,8 @@
         <div class="p-6 pb-4 flex justify-between items-center border-b border-white/5">
           <h2 class="text-xl font-semibold text-slate-200">Applications</h2>
           <button @click="openAddDialog" class="glass-button primary flex items-center gap-2 text-sm">
-            <span class="text-lg">+</span> Add App
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Add App
           </button>
         </div>
 
@@ -124,8 +130,12 @@
                       <h3 class="font-semibold text-lg text-slate-100 truncate group-hover:text-cyan-400 transition-colors">{{ app.name }}</h3>
                     </div>
                     <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button @click="editApp(app)" class="p-1.5 rounded hover:bg-white/10 text-slate-400 hover:text-white transition-colors" title="Edit">✏️</button>
-                      <button @click="removeApp(app.id)" class="p-1.5 rounded hover:bg-red-500/20 text-slate-400 hover:text-red-400 transition-colors" title="Remove">🗑️</button>
+                      <button @click="editApp(app)" class="p-1.5 rounded hover:bg-white/10 text-slate-400 hover:text-white transition-colors" title="Edit">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                      </button>
+                      <button @click="removeApp(app.id)" class="p-1.5 rounded hover:bg-red-500/20 text-slate-400 hover:text-red-400 transition-colors" title="Remove">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                      </button>
                     </div>
                   </div>
                   <div class="text-xs text-slate-500 mb-2 font-mono truncate" :title="app.path">
@@ -140,10 +150,14 @@
           </div>
 
           <!-- Empty state -->
-          <div v-else class="h-full flex flex-col items-center justify-center text-slate-500 opacity-60">
-            <div class="text-6xl mb-4">📱</div>
-            <h3 class="text-xl font-medium mb-2">No applications yet</h3>
-            <p>Click "Add App" to get started</p>
+          <div v-else class="h-full flex flex-col items-center justify-center text-slate-500/50 py-12">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="opacity-20 mb-4">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="3" y1="9" x2="21" y2="9"></line>
+              <line x1="9" y1="21" x2="9" y2="9"></line>
+            </svg>
+            <h3 class="text-xl font-medium mb-1">No applications yet</h3>
+            <p class="text-sm">Click "Add App" to get started</p>
           </div>
         </div>
       </div>
@@ -207,10 +221,76 @@
               ></div>
             </button>
           </div>
+
+          <!-- Web Access Security -->
+          <div class="space-y-3 p-4 glass-card bg-white/5 rounded-xl border border-white/5">
+            <div class="flex justify-between items-start">
+              <div>
+                <div class="font-semibold text-slate-200">Web Access Security</div>
+                <div class="text-xs text-slate-400 mb-3">Remote deck protection</div>
+              </div>
+              <div v-if="settings.auth_enabled" class="px-2 py-0.5 rounded bg-green-500/10 text-green-400 text-[10px] font-bold border border-green-500/20">
+                ENABLED
+              </div>
+              <div v-else class="px-2 py-0.5 rounded bg-red-500/10 text-red-400 text-[10px] font-bold border border-red-500/20">
+                DISABLED
+              </div>
+            </div>
+            
+            <div class="flex items-center gap-3 p-3 bg-black/30 rounded-lg border border-white/5">
+                <div class="flex-1 font-mono tracking-widest text-sm text-center text-slate-400">
+                   {{ settings.auth_enabled ? '••••••' : 'NO PIN SET' }}
+                </div>
+            </div>
+
+            <button @click="openPinDialog" class="glass-button primary w-full flex items-center justify-center gap-2 py-2">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3L15.5 7.5z"></path></svg>
+              Modify PIN
+            </button>
+          </div>
+
+          <!-- Version Display -->
+          <div class="pt-2 text-center">
+            <span class="text-[10px] font-mono text-slate-600 tracking-widest uppercase">Aviator {{ appVersion }}</span>
+          </div>
         </div>
 
         <div class="flex gap-4 mt-8">
           <button @click="closeSettings" class="glass-button w-full font-bold">Done</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modify PIN Dialog -->
+    <div v-if="showPinDialog" class="dialog-overlay">
+      <div class="glass-card p-8 rounded-2xl w-full max-w-sm shadow-2xl m-4 animate-fade-in-up">
+        <h2 class="text-2xl font-bold mb-2 text-white">Modify Security PIN</h2>
+        <p class="text-xs text-slate-400 mb-6 text-center italic">Type 4-6 digits. Leave empty to disable security.</p>
+        
+        <div class="space-y-4">
+          <div class="relative">
+            <input 
+              :type="showNewPinValue ? 'text' : 'password'" 
+              v-model="newPinData" 
+              maxlength="6"
+              placeholder="Enter new PIN"
+              class="glass-input text-center font-mono tracking-widest text-base h-14 pr-12 focus:border-cyan-500"
+              ref="pinInputRef"
+            />
+            <button 
+                @click="showNewPinValue = !showNewPinValue" 
+                class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors p-2"
+                title="Toggle visibility"
+            >
+                <svg v-if="showNewPinValue" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                <svg v-else width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex gap-4 mt-8">
+          <button @click="closePinDialog" class="glass-button flex-1 bg-white/5 hover:bg-white/10">Cancel</button>
+          <button @click="updatePin" class="glass-button primary flex-1 font-bold">Update</button>
         </div>
       </div>
     </div>
@@ -219,11 +299,12 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
-import { GetApps, AddApp, UpdateApp, RemoveApp, GetServerInfo, SelectFile, StartServer, StopServer, GetProcessStatuses, GetSettings, UpdateSettings } from '../wailsjs/go/main/App';
+import { GetApps, AddApp, UpdateApp, RemoveApp, GetServerInfo, SelectFile, StartServer, StopServer, GetProcessStatuses, GetSettings, UpdateSettings, SetWebPIN, GetVersion } from '../wailsjs/go/main/App';
 import { BrowserOpenURL, EventsOn, WindowMinimise, WindowToggleMaximise, Quit } from '../wailsjs/runtime/runtime';
 import QRCode from 'qrcode';
 
 const apps = ref([]);
+const appVersion = ref('');
 const processStatuses = ref({});
 const serverInfo = ref({
   localURL: 'http://localhost:8000',
@@ -241,7 +322,13 @@ const dialogData = ref({
 });
 
 const showSettings = ref(false);
-const settings = ref({ auto_start: false });
+const settings = ref({ auto_start: false, auth_enabled: false });
+const webPin = ref(''); // Internal state for the input in settings (now mostly for display)
+
+const showPinDialog = ref(false);
+const newPinData = ref('');
+const showNewPinValue = ref(false);
+const pinInputRef = ref(null);
 
 const qrCanvas = ref(null);
 let statusPollInterval = null;
@@ -251,6 +338,7 @@ onMounted(async () => {
   await loadServerInfo();
   await loadProcessStatuses();
   await loadSettings();
+  appVersion.value = await GetVersion();
   
   // Poll process statuses every 2 seconds
   statusPollInterval = setInterval(loadProcessStatuses, 2000);
@@ -305,6 +393,32 @@ async function toggleAutoStart() {
     settings.value.auto_start = !settings.value.auto_start;
     alert('Failed to update system settings: ' + err);
   }
+}
+
+function openPinDialog() {
+  newPinData.value = '';
+  showNewPinValue.value = false;
+  showPinDialog.value = true;
+}
+
+function closePinDialog() {
+  showPinDialog.value = false;
+}
+
+async function updatePin() {
+  try {
+    await SetWebPIN(newPinData.value);
+    await loadSettings();
+    closePinDialog();
+    alert(settings.value.auth_enabled ? '✅ Security PIN updated successfully!' : '🔓 Security PIN removed.');
+  } catch (err) {
+    alert('Failed to update PIN: ' + err);
+  }
+}
+
+async function saveWebPin() {
+  // Keeping this for compatibility or simpler use, but now we use updatePin
+  updatePin();
 }
 
 async function loadServerInfo() {

@@ -46,7 +46,7 @@
                 <h2
                     class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 tracking-widest uppercase mb-1">
                     Aviator</h2>
-                <p class="text-xs text-slate-500 font-mono">DOCS v2.0</p>
+                <p class="text-xs text-slate-500 font-mono">DOCS v2.4</p>
             </a>
         </div>
         <nav class="px-4 space-y-1">
@@ -149,6 +149,21 @@
                         </div>
                     </div>
 
+                    <!-- Server Health -->
+                    <div class="endpoint-card">
+                        <div class="endpoint-header">
+                            <span class="method get">GET</span>
+                            <span class="url">/ping</span>
+                        </div>
+                        <div class="p-6">
+                            <p>High-priority connectivity check. Responds instantly without checking config locks.</p>
+                            <div class="mt-4">
+                                <span class="text-xs text-slate-500 uppercase font-bold">Response 200 OK</span>
+                                <pre class="!m-0 !mt-2 rounded-lg !text-xs text-green-400">PONG</pre>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Server Info -->
                     <div class="endpoint-card">
                         <div class="endpoint-header">
@@ -156,15 +171,32 @@
                             <span class="url">/api/info</span>
                         </div>
                         <div class="p-6">
-                            <p>Returns server metadata and status information.</p>
+                            <p>Returns server metadata and authorization status.</p>
                             <div class="mt-4">
                                 <span class="text-xs text-slate-500 uppercase font-bold">Response 200 OK</span>
                                 <pre class="!m-0 !mt-2 rounded-lg !text-xs"><code class="language-json">{
-  "version": "2.0.0",
-  "platform": "windows",
-  "apps_count": 5,
-  "server_time": 1673045823
+  "status": "running",
+  "backend": "go",
+  "hostname": "Aviator Desktop",
+  "auth_required": true,
+  "is_authorized": false
 }</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Authentication -->
+                    <div class="endpoint-card">
+                        <div class="endpoint-header">
+                            <span class="method post">POST</span>
+                            <span class="url">/api/auth</span>
+                        </div>
+                        <div class="p-6">
+                            <p>Validates PIN and sets an HttpOnly session cookie.</p>
+                            <div class="mt-4">
+                                <span class="text-xs text-slate-500 uppercase font-bold">Request Body</span>
+                                <pre
+                                    class="!m-0 !mt-2 rounded-lg !text-xs"><code class="language-json">{ "pin": "1234" }</code></pre>
                             </div>
                         </div>
                     </div>

@@ -26,6 +26,10 @@ export function GetSettings() {
   return window['go']['main']['App']['GetSettings']();
 }
 
+export function GetVersion() {
+  return window['go']['main']['App']['GetVersion']();
+}
+
 export function Hide() {
   return window['go']['main']['App']['Hide']();
 }
@@ -52,6 +56,10 @@ export function SelectFile() {
 
 export function SetQuitting(arg1) {
   return window['go']['main']['App']['SetQuitting'](arg1);
+}
+
+export function SetWebPIN(arg1) {
+  return window['go']['main']['App']['SetWebPIN'](arg1);
 }
 
 export function Show() {

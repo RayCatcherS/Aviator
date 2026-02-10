@@ -15,6 +15,8 @@ export function GetServerInfo():Promise<Record<string, any>>;
 
 export function GetSettings():Promise<config.Settings>;
 
+export function GetVersion():Promise<string>;
+
 export function Hide():Promise<void>;
 
 export function IsServerRunning():Promise<boolean>;
@@ -28,6 +30,8 @@ export function RemoveApp(arg1:string):Promise<void>;
 export function SelectFile():Promise<string>;
 
 export function SetQuitting(arg1:boolean):Promise<void>;
+
+export function SetWebPIN(arg1:string):Promise<void>;
 
 export function Show():Promise<void>;
 

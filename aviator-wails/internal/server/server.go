@@ -10,10 +10,11 @@ import (
 	"io/fs"
 	"log"
 	"net/http"
-	"os"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type Server struct {
@@ -21,6 +22,10 @@ type Server struct {
 	ProcessMonitor *processmon.ProcessMonitor
 	FileServer     http.Handler
 	httpServer     *http.Server
+
+	// Key Bucket (Session Pool)
+	keyBucket   map[string]time.Time
+	bucketMutex sync.RWMutex
 
 	// Cache for process statuses
 	statusCache      map[string]bool
@@ -37,6 +42,7 @@ func NewServer(cm *config.ConfigManager, webFS fs.FS, pm *processmon.ProcessMoni
 		ProcessMonitor: pm,
 		FileServer:     fsHandler,
 		statusCache:    make(map[string]bool),
+		keyBucket:      make(map[string]time.Time),
 	}
 }
 
@@ -65,13 +71,44 @@ func (s *Server) Stop() error {
 }
 
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	log.Printf("[REQ] Incoming request: %s %s", r.Method, r.URL.Path)
+
 	// CORS headers for dev
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
 	w.Header().Set("Access-Control-Allow-Headers", "*")
 
+	// Disabilita cache per forzare aggiornamenti su mobile
+	w.Header().Set("Cache-Control", "no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0")
+	w.Header().Set("Pragma", "no-cache")
+	w.Header().Set("Expires", "0")
+
 	if r.Method == "OPTIONS" {
 		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	// Public check for server health
+	if r.URL.Path == "/ping" {
+		w.Header().Set("Content-Type", "text/plain")
+		w.Write([]byte("PONG"))
+		return
+	}
+
+	// Real logic but at top level to avoid handleAPI/switch potential issues
+	if r.URL.Path == "/api/info" {
+		w.Header().Set("Content-Type", "application/json")
+		settings := s.Config.GetSettings()
+		authorized := s.isAuthorized(r)
+
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"status":        "running",
+			"backend":       "go",
+			"version":       "v2.8.2",
+			"hostname":      "Aviator Desktop",
+			"auth_required": settings.AuthEnabled,
+			"is_authorized": authorized,
+		})
 		return
 	}
 
@@ -90,30 +127,104 @@ func (s *Server) handleAPI(w http.ResponseWriter, r *http.Request) {
 
 	switch {
 	case r.URL.Path == "/api/apps" && r.Method == "GET":
+		if !s.isAuthorized(r) {
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			return
+		}
 		json.NewEncoder(w).Encode(s.Config.GetApps())
 
 	case strings.HasPrefix(r.URL.Path, "/api/launch/") && r.Method == "POST":
+		if !s.isAuthorized(r) {
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			return
+		}
 		appID := strings.TrimPrefix(r.URL.Path, "/api/launch/")
 		s.handleLaunch(w, appID)
 
-	case r.URL.Path == "/api/info" && r.Method == "GET":
-		// Get hostname and username
-		hostname, _ := os.Hostname()
-		username := os.Getenv("USERNAME") // Windows username
-
-		// Create a friendly display name
-		displayName := hostname
-		if username != "" {
-			displayName = fmt.Sprintf("%s@%s", username, hostname)
+	case r.URL.Path == "/api/process-statuses" && r.Method == "GET":
+		if !s.isAuthorized(r) {
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			return
 		}
 
-		json.NewEncoder(w).Encode(map[string]string{
-			"status":   "running",
-			"backend":  "go",
-			"hostname": displayName,
+		s.statusCacheMutex.RLock()
+		cacheAge := time.Since(s.statusCacheTime)
+		if cacheAge < time.Second && len(s.statusCache) > 0 {
+			cached := make(map[string]bool)
+			for k, v := range s.statusCache {
+				cached[k] = v
+			}
+			s.statusCacheMutex.RUnlock()
+			json.NewEncoder(w).Encode(cached)
+			return
+		}
+		s.statusCacheMutex.RUnlock()
+
+		// Update cache
+		statuses := s.ProcessMonitor.GetAllStatuses()
+		s.statusCacheMutex.Lock()
+		s.statusCache = statuses
+		s.statusCacheTime = time.Now()
+		s.statusCacheMutex.Unlock()
+
+		json.NewEncoder(w).Encode(statuses)
+
+	case r.URL.Path == "/api/auth" && r.Method == "POST":
+		var authData struct {
+			PIN string `json:"pin"`
+		}
+		if err := json.NewDecoder(r.Body).Decode(&authData); err != nil {
+			http.Error(w, "Invalid request", http.StatusBadRequest)
+			return
+		}
+
+		if s.Config.VerifyWebPIN(authData.PIN) {
+			// Generate unique access key
+			key := strings.ReplaceAll(uuid.New().String(), "-", "")
+			s.bucketMutex.Lock()
+			s.keyBucket[key] = time.Now()
+			s.bucketMutex.Unlock()
+
+			// Set HttpOnly Cookie
+			http.SetCookie(w, &http.Cookie{
+				Name:     "aviator_key",
+				Value:    key,
+				Path:     "/",
+				HttpOnly: true,
+				SameSite: http.SameSiteLaxMode,
+				MaxAge:   86400, // 24 hours
+			})
+
+			json.NewEncoder(w).Encode(map[string]string{
+				"status": "success",
+			})
+		} else {
+			http.Error(w, "Invalid PIN", http.StatusUnauthorized)
+		}
+
+	case r.URL.Path == "/api/logout" && r.Method == "POST":
+		cookie, err := r.Cookie("aviator_key")
+		if err == nil {
+			s.bucketMutex.Lock()
+			delete(s.keyBucket, cookie.Value)
+			s.bucketMutex.Unlock()
+		}
+
+		// Clear cookie
+		http.SetCookie(w, &http.Cookie{
+			Name:     "aviator_key",
+			Value:    "",
+			Path:     "/",
+			HttpOnly: true,
+			MaxAge:   -1,
 		})
+		w.WriteHeader(http.StatusOK)
 
 	case r.URL.Path == "/api/process-statuses" && r.Method == "GET":
+		if !s.isAuthorized(r) {
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			return
+		}
 		// Return cached statuses if less than 1 second old
 		s.statusCacheMutex.RLock()
 		cacheAge := time.Since(s.statusCacheTime)
@@ -140,6 +251,42 @@ func (s *Server) handleAPI(w http.ResponseWriter, r *http.Request) {
 	default:
 		http.Error(w, "Not Found", http.StatusNotFound)
 	}
+}
+
+func (s *Server) isAuthorized(r *http.Request) bool {
+	if !s.Config.GetSettings().AuthEnabled {
+		return true
+	}
+
+	cookie, err := r.Cookie("aviator_key")
+	if err != nil {
+		return false
+	}
+
+	key := cookie.Value
+
+	s.bucketMutex.RLock()
+	lastSeen, exists := s.keyBucket[key]
+	s.bucketMutex.RUnlock()
+
+	if !exists {
+		return false
+	}
+
+	// Session valid for 24 hours
+	if time.Since(lastSeen) > 24*time.Hour {
+		s.bucketMutex.Lock()
+		delete(s.keyBucket, key)
+		s.bucketMutex.Unlock()
+		return false
+	}
+
+	// Update last seen
+	s.bucketMutex.Lock()
+	s.keyBucket[key] = time.Now()
+	s.bucketMutex.Unlock()
+
+	return true
 }
 
 func (s *Server) handleLaunch(w http.ResponseWriter, appID string) {

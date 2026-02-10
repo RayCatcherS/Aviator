@@ -2,6 +2,8 @@ package config
 
 import (
 	"aviator-wails/internal/icons"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"log"
 	"os"
@@ -20,7 +22,9 @@ type App struct {
 }
 
 type Settings struct {
-	AutoStart bool `json:"auto_start"`
+	AutoStart   bool   `json:"auto_start"`
+	AuthEnabled bool   `json:"auth_enabled"`
+	WebPINHash  string `json:"web_pin_hash"`
 }
 
 type ConfigManager struct {
@@ -188,7 +192,6 @@ func (cm *ConfigManager) LoadSettings() error {
 	data, err := os.ReadFile(cm.SettingsPath)
 	if err != nil {
 		if os.IsNotExist(err) {
-			// Start with default settings
 			cm.Settings = Settings{AutoStart: IsAutoStartEnabled()}
 			return nil
 		}
@@ -196,12 +199,6 @@ func (cm *ConfigManager) LoadSettings() error {
 	}
 
 	err = json.Unmarshal(data, &cm.Settings)
-
-	// Sync with Registry just in case of mismatch on startup
-	// If config says true but registry false -> trust registry? Or config?
-	// Let's trust registry as source of truth for "active" state,
-	// but config file as persistence for user intention.
-	// Actually, easier: Read registry state into memory.
 	cm.Settings.AutoStart = IsAutoStartEnabled()
 
 	return err
@@ -227,13 +224,43 @@ func (cm *ConfigManager) GetSettings() Settings {
 
 func (cm *ConfigManager) UpdateSettings(s Settings) error {
 	cm.mu.Lock()
+	// Proteggiamo il PIN se il frontend invia un oggetto senza hash (es. cambio auto-start)
+	if s.WebPINHash == "" && cm.Settings.WebPINHash != "" {
+		s.WebPINHash = cm.Settings.WebPINHash
+		s.AuthEnabled = cm.Settings.AuthEnabled
+	}
 	cm.Settings = s
 	cm.mu.Unlock()
 
-	// Apply System Changes
+	// Applica modifiche di sistema
 	if err := SetAutoStart(s.AutoStart); err != nil {
 		return err
 	}
 
 	return cm.SaveSettings()
+}
+
+func (cm *ConfigManager) SetWebPIN(plainPIN string) error {
+	cm.mu.Lock()
+	// For simplicity and to avoid external dependencies like bcrypt for this local app,
+	// we'll use a SHA256 hash.
+	hash := sha256.Sum256([]byte(plainPIN))
+	cm.Settings.WebPINHash = hex.EncodeToString(hash[:])
+	cm.Settings.AuthEnabled = plainPIN != ""
+	cm.mu.Unlock() // Unlock BEFORE saving to avoid deadlock in SaveSettings
+
+	return cm.SaveSettings()
+}
+
+func (cm *ConfigManager) VerifyWebPIN(plainPIN string) bool {
+	cm.mu.RLock()
+	defer cm.mu.RUnlock()
+
+	if !cm.Settings.AuthEnabled {
+		return true
+	}
+
+	hash := sha256.Sum256([]byte(plainPIN))
+	expectedHash := hex.EncodeToString(hash[:])
+	return cm.Settings.WebPINHash == expectedHash
 }
