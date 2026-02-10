@@ -23,8 +23,3 @@ Aviator web app was failing to load on mobile and incognito browsers due to serv
    - Optimized web app UI: Centered and resized the PIN input, and added a top-right settings gear with a logout menu.
    - Added `Enter` key support for PIN submission.
 
-## Verification
-- [x] Server responds to `/ping` instantly.
-- [x] PIN modal appears when unauthorized.
-- [x] PIN submission successfully sets session cookie.
-- [x] App list loads correctly after login.
